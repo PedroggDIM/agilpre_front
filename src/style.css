@@ -1,89 +1,50 @@
+/* Importa los iconos de PrimeVue */
+@import "primeicons/primeicons.css";
+
+/* Variables de tamaño y proporción */
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
+  --ancho-max-contenedor: 1280px;
+  --ancho-max-logo: 45px;
+  --proporcion-logo: 1.35;
+  --tiempo-transicion: 0.2s;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+/* Paleta de colores */
+:root {
+  --color-primario: #007BFF; /* Azul */
+  --color-secundario: #4A4A4A; /* Gris oscuro */
+  --color-fondo: #F5F5F5; /* Gris claro */
+  --color-borde: #BDBDBD; /* Gris claro */
+  --colorTextoPrimario: #333333; /* Gris oscuro */
+  --colorTextoSecundario: #666666; /* Gris medio */
+  --gradiente-navbar: linear-gradient(to bottom, #0056b3, #007BFF); /* Gradiente azul */
 }
 
+/* Fuentes y tipografía */
+:root {
+  --fuente-predeterminada: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --peso-fuente-normal: 400;
+  --tamano-fuente-normal: 16px;
+  --altura-linea-normal: 1.5;
+}
+
+/* Estilos generales */
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  font-family: var(--fuente-predeterminada);
+  font-weight: var(--peso-fuente-normal);
+  font-size: var(--tamano-fuente-normal);
+  line-height: var(--altura-linea-normal);
+  color: var(--color-borde);
+  background-color: var(--color-secundario);
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
+a {
   font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  color: var(--color-primario);
+  text-decoration: none;
+  transition: color var(--tiempo-transicion);
 }
 
-.card {
-  padding: 2em;
-}
-
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+a:hover {
+  color: darken(var(--color-primario), 10%);
 }
