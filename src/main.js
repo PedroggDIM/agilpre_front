@@ -8,7 +8,8 @@ import { loginStore } from "@/stores/loginStore.js"
 // Importar y declarar las vistas
 import Home from "@/components/Home.vue"
 const Bienvenida = () => import('@/components/Bienvenida.vue')
-const NuevaIncidencia = () => import('@/components/NuevaIncidencia.vue')
+const NuevaIncidencia = () => import('@/components/Incidencias/NuevaIncidencia.vue')
+const GestionarIncidencias = () => import('@/components/Incidencias/GestionarIncidencias.vue')
 
 // Importar estilos e iconos
 import "bootstrap/dist/css/bootstrap.min.css"
@@ -21,9 +22,10 @@ const pinia = createPinia()
 
 // Definir las rutas
 const routes = [
-  { path: "/",                      name: "Home",                 component: Home               },
-  { path: "/bienvenida",            name: "Bienvenida",           component: Bienvenida         },
-  { path: "/nuevaIncidencia",       name: "NuevaIncidencia",      component: NuevaIncidencia    }
+  { path: "/",                          name: "Home",                       component: Home                     },
+  { path: "/bienvenida",                name: "Bienvenida",                 component: Bienvenida               },
+  { path: "/nuevaIncidencia",           name: "NuevaIncidencia",            component: NuevaIncidencia          },
+  { path: "/gestionarIncidencias",      name: "GestionarIncidencias",       component: GestionarIncidencias     }
 ]
 
 
@@ -36,13 +38,18 @@ const router = createRouter({
 // Guarda de navegación
 router.beforeEach((to, from, next) => {
   const login = loginStore()
-
-  if (to.name === "Home") {
-    next()
-  } else if (login.rol === "usuario" || login.rol === "administrador") {
-    next()
+  if (login.rol === "usuario" || login.rol === "administrador") {
+    if (to.name === "Home") {
+      next({ name: "Bienvenida" });
+    } else {
+      next();
+    }
   } else {
-    next({ name: "Home" })
+    if (to.name === "Home") {
+      next();
+    } else {
+      next({ name: "Home" });
+    }
   }
 })
 

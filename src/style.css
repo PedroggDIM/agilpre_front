@@ -15,8 +15,8 @@
   --color-secundario: #4A4A4A; /* Gris oscuro */
   --color-fondo: #F5F5F5; /* Gris claro */
   --color-borde: #BDBDBD; /* Gris claro */
-  --colorTextoPrimario: #333333; /* Gris oscuro */
-  --colorTextoSecundario: #666666; /* Gris medio */
+  --color-TextoPrimario: #000000; /* Gris oscuro */
+  --color-TextoSecundario: #666666; /* Gris medio */
   --gradiente-navbar: linear-gradient(to bottom, #0056b3, #007BFF); /* Gradiente azul */
 }
 
@@ -47,4 +47,45 @@ a {
 
 a:hover {
   color: darken(var(--color-primario), 10%);
+}
+
+.btn-gen {
+  display: inline-block;
+  padding: 0.8rem 1.5rem;
+  font-size: 1.2rem;
+  color: var(--color-secundario);
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.card-gen {
+  background-color: var(--color-fondo);
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 20px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  display: inline-block;
+  width: auto;
+}
+
+.card_header {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.card_titulo {
+  margin: 0;
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+}
+
+.card_descripcion {
+  margin: 0;
+  text-align: center;
+  font-size: 1.2rem;
 }

@@ -4,10 +4,14 @@ import { loginStore } from "@/stores/loginStore"
 
 export default {
   computed: {
-    ...mapState(loginStore, ["rol"]),
+    ...mapState(loginStore, ["rol","nombre"]),
   },
   methods: {
-    //...mapActions(loginStore, ["cerrarSesion"]),
+    ...mapActions(loginStore, ["cerrarSesion"]),
+    cerrarSesionNav() {
+      this.cerrarSesion();
+      this.$router.push({ name: "Home" });
+    },
   },
 }
 </script>
@@ -21,27 +25,27 @@ export default {
             <img src="/LogoAgesil.png" alt="Logo" />
           </a>
         </div>
-        <!-- Opción para crear incidencia -->
-        <router-link class="nav-link" to="/nuevaIncidencia">Crear Incidencia</router-link>
-        <!-- Opción para gestionar incidencias -->
-        <router-link class="nav-link" to="/gestionarIncidencias">Gestionar Incidencias</router-link>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
       </div>
 
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarNav"
-        aria-controls="navbarNav"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto">
+        <ul class="navbar-nav">
+          <router-link class="nav-link" to="/nuevaIncidencia">Crear Incidencia</router-link>
+          <router-link class="nav-link" to="/gestionarIncidencias">Gestionar Incidencias</router-link>
+        </ul>
+        <ul class="navbar-nav ms-auto">
           <!-- Desplegable de usuario -->
-          <li class="nav-item dropdown">
+          <li v-if="rol !== ''" class="nav-item dropdown">
             <a
               class="nav-link dropdown-toggle"
               href="#"
@@ -50,18 +54,18 @@ export default {
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              usuario.nombre
+              <i class="fas fa-user"></i> <!-- Icono de usuario -->
             </a>
-            <ul class="dropdown-menu" aria-labelledby="usuarioDropdown">
+            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-end" aria-labelledby="usuarioDropdown">
               <li class="dropdown-item">
-                <strong>Nombre:</strong>
+                <strong>{{ nombre }}</strong>
               </li>
               <li class="dropdown-item">
-                <strong>Rol:</strong> {{ rol }}
+                {{ rol }}
               </li>
               <li class="dropdown-divider"></li>
               <li class="dropdown-item">
-                <button class="btn btn-link" @click="cerrarSesion">Cerrar Sesión</button>
+                <button class="btn btn-link" @click="cerrarSesionNav()">Cerrar Sesión</button>
               </li>
             </ul>
           </li>

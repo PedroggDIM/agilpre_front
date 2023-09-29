@@ -2,7 +2,7 @@
 export default {
   data() {
     return {
-      titulo: 'Este es el footer',
+      titulo: 'Esta es la pantalla de Nueva incidencia',
     };
   },
 };
@@ -10,6 +10,6 @@ export default {
 
 <template>
   <div>
-    <h3>{{ titulo }}</h3>
+    <h1>{{ titulo }}</h1>
   </div>
 </template>
