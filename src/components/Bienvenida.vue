@@ -12,6 +12,7 @@ export default {
   <!-- Zona que invita a crear una incidencia -->
   <div>
     <div class="card_header">
+        <br><br>
         <h1 class="card_titulo">AGESIL</h1>
         <p class="card_descripcion">
           Este es el texto que explica en que consiste la aplicación.

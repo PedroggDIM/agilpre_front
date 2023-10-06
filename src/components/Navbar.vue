@@ -17,7 +17,7 @@ export default {
 </script>
 
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light bg-custom my-custom-nav">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container-fluid">
       <div class="d-flex justify-content-start align-items-center">
         <div class="navbar-brand">
@@ -42,6 +42,7 @@ export default {
         <ul class="navbar-nav">
           <router-link class="nav-link" to="/nuevaIncidencia">Crear Incidencia</router-link>
           <router-link class="nav-link" to="/gestionarIncidencias">Gestionar Incidencias</router-link>
+          <router-link class="nav-link" to="/gestionarIncidenciasSABAS">Gestionar Incidencias SABAS</router-link>
         </ul>
         <ul class="navbar-nav ms-auto">
           <!-- Desplegable de usuario -->
@@ -77,7 +78,8 @@ export default {
 
 <style scoped>
 .navbar {
-  background: var(--gradiente-navbar);
+  background: black; /* Fondo negro */
+  color: white; /* Letras blancas */
   height: auto;
   display: flex;
   justify-content: space-between;
@@ -88,6 +90,7 @@ export default {
   left: 0;
   width: 100%;
   z-index: 999;
+  font-size: 22px; /* Tamaño de fuente aumentado */
 }
 
 .navbar-brand {
@@ -129,15 +132,10 @@ export default {
   padding: 0.5rem 1rem;
   color: var(--color-Textoprimario);
   text-decoration: none;
-  transition: color var(--tiempo-transicion);
-  text-shadow: 2px 2px 2px rgba(255, 255, 255, 0.8), -1px -1px 1px rgba(0, 0, 0, 0.5),
-    0 0 2px rgba(0, 0, 0, 0.3);
 }
 
 .nav-link:hover {
   color: inherit;
-  text-shadow: 3px 3px 3px rgba(255, 255, 255, 0.8), -2px -2px 2px rgba(0, 0, 0, 0.5),
-    0 0 4px rgba(0, 0, 0, 0.3);
 }
 
 .nav-link.active {

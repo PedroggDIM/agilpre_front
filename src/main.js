@@ -5,11 +5,18 @@ import App from "@/App.vue"
 import { createPinia } from "pinia"
 import { loginStore } from "@/stores/loginStore.js"
 
+//primevue
+import 'primevue/resources/themes/saga-blue/theme.css'  //theme
+import 'primevue/resources/primevue.min.css'            //core css
+import 'primeicons/primeicons.css'                      //icons
+import PrimeVue from 'primevue/config'
+
 // Importar y declarar las vistas
 import Home from "@/components/Home.vue"
 const Bienvenida = () => import('@/components/Bienvenida.vue')
 const NuevaIncidencia = () => import('@/components/Incidencias/NuevaIncidencia.vue')
 const GestionarIncidencias = () => import('@/components/Incidencias/GestionarIncidencias.vue')
+const GestionarIncidenciasSABAS = () => import('@/components/Incidencias/GestionarIncidenciasSABAS.vue')
 
 // Importar estilos e iconos
 import "bootstrap/dist/css/bootstrap.min.css"
@@ -22,10 +29,11 @@ const pinia = createPinia()
 
 // Definir las rutas
 const routes = [
-  { path: "/",                          name: "Home",                       component: Home                     },
-  { path: "/bienvenida",                name: "Bienvenida",                 component: Bienvenida               },
-  { path: "/nuevaIncidencia",           name: "NuevaIncidencia",            component: NuevaIncidencia          },
-  { path: "/gestionarIncidencias",      name: "GestionarIncidencias",       component: GestionarIncidencias     }
+  { path: "/",                          name: "Home",                       component: Home                      },
+  { path: "/bienvenida",                name: "Bienvenida",                 component: Bienvenida                },
+  { path: "/nuevaIncidencia",           name: "NuevaIncidencia",            component: NuevaIncidencia           },
+  { path: "/gestionarIncidencias",      name: "GestionarIncidencias",       component: GestionarIncidencias      },
+  { path: "/gestionarIncidenciasSABAS", name: "GestionarIncidenciasSABAS",  component: GestionarIncidenciasSABAS },
 ]
 
 
@@ -57,4 +65,5 @@ router.beforeEach((to, from, next) => {
 const app = createApp(App)
 app.use(router)
 app.use(pinia)
+app.use(PrimeVue)
 app.mount("#app")
