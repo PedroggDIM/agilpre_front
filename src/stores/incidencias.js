@@ -3,16 +3,19 @@ import {
   getIncidencias,
   guardarIncidencia 
        } from './api-service';
+import { loginStore } from "@/stores/loginStore";
 
 export const incidenciasStore = defineStore("incidencias", {
   state: () => ({
     incidencias: []
   }),
   actions: {
+    
     getIncidencias() {
-
-      getIncidencias().then((response) => {
-
+      const dataSession = loginStore().recuperarSesion();
+      debugger
+      getIncidencias(dataSession).then((response) => {
+        debugger;
         this.incidencias = response.data._embedded.incidenciaModels;
         // this.incidencias.forEach((incidencia) => {
         //   this.formatearFecha(incidencia);

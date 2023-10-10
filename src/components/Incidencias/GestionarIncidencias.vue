@@ -1,15 +1,136 @@
+<script setup>
+import Navbar from "@/components/Navbar.vue"
+</script>
 <script>
+import { mapActions, mapState } from 'pinia'
+import axios from 'axios'
+import { incidenciasStore } from '@/stores/incidencias.js';
+
 export default {
+  props: ['incidencia'],
   data() {
     return {
-      titulo: 'Esta es la pantalla para Gestionar Incidencias',
+      estados: [
+        'Comunicada a la empresa',
+        'Comunicada a la empresa y resuelta',
+        'Enviada al SABAS',
+        'Pendiente de tratar en la reunión mensual',
+        'En trámite',
+        'Cerrada'
+      ],
+      busquedaEstado: ''
     };
   },
-};
+  computed: {
+    ...mapState(incidenciasStore, ['incidencias']),
+    filtroDeBusqueda() {
+      const filtroDeIncidencias = this.incidencias.filter((incidencia) =>
+        incidencia.estado.toLowerCase().includes(this.busquedaEstado.toLowerCase())
+      );
+      // return filtroDeIncidencias.slice(0, 4);
+      return filtroDeIncidencias;
+    },
+  },
+  methods: {
+  }
+}
 </script>
 
 <template>
   <div>
-    <h1>{{ titulo }}</h1>
+    <Navbar />
+  </div>
+  <div class="container-fluid ancho">
+    <div>
+      <h5>Buscar por Estado</h5>
+      <select v-model="busquedaEstado" class="form-control mb-3">
+        <option value="">Selecciona un estado</option>
+        <option v-for="estado in estados" :key="estado" :value="estado">{{ estado }}</option>
+      </select>
+      <div class="row">
+
+        <div class="col-12 col-md-6 mb-3">
+
+          <div v-for="incidencia in filtroDeBusqueda" :key="incidencia.id" class="card m-0 p-0">
+            <!-- <div class="card-header text-primary"><strong>Estado: </strong>{{ incidencia.estado }}</div>             -->
+
+            <div class="card">
+
+              <p class="mb-0"><strong>Id: </strong>{{ incidencia.id }}</p>
+              <p class="mb-0"><strong>Zona: </strong>{{ incidencia.zona }}</p>
+              <p class="mb-0"><strong>Unidad: </strong>{{ incidencia.unidad }}</p>
+              <p class="mb-0"><strong>Fecha inicio: </strong>{{ incidencia.fechaInicio }}</p>
+              <p class="mb-0"><strong>Fecha fin: </strong>{{ incidencia.fechaFin }}</p>
+              <p class="mb-0"><strong>Duración en días: </strong>{{ incidencia.numDias }}</p>
+              <p class="mb-0"><strong>Estado: </strong>{{ incidencia.estado }}</p>
+              <p class="mb-0"><strong>Fecha de comunicación a empresa responsable: </strong>{{
+                incidencia.comunicaEmpresa }}</p>
+              <p class="mb-0"><strong>Información adicional añadida por el grabador: </strong>{{
+                incidencia.infoAdicio_grabador }}</p>
+              <p class="mb-0"><strong>Descripción: </strong>{{ incidencia.descripcion }}</p>
+              <p class="mb-0"><strong>Categoria: </strong>{{ incidencia.categoria }}</p>
+
+              <div v-if="incidencia.categoria === 'DeficienciaServicio'">
+                <div class="container-fluid incumplimiento">
+                  <h5>Incumplimientos:</h5>
+                  {{ incidencia.incumplimiento }}
+                </div>
+              </div>
+
+              <div v-if="incidencia.categoria === 'LimpiezaChoque'">
+                <div class="container-fluid LimpiezaChoque">
+                  <h5>Limpieza de choque:</h5>
+                  Tipo de choque: {{ incidencia.tipoChoque }}
+                  Gravedad: {{ incidencia.gravedad }}
+                </div>
+              </div>
+
+              <div v-if="incidencia.categoria === 'CambiosDependencia'">
+                <div class="container-fluid LimpiezaChoque">
+                  <h5>Cambios en las dependencias oficiales:</h5>
+                  Tipo de cambio: {{ incidencia.tipoCambio }}
+                  Dependencias afectadas: {{ incidencia.tipoDependencia }}
+                  Superficie afectada en metros: {{ incidencia.metrosCuadrados }}
+                </div>
+              </div>
+              <div class="col-12 col-md-12 mb-3" id="botones">
+                <button type="button" class="btn btn-success">Enviar al SABAS</button>&nbsp;
+                <button type="button" class="btn btn-success">Editar</button>
+              </div>
+
+            </div>
+
+
+
+
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
+<style>
+.ancho {
+  width: 95%;
+  margin: 0 auto;
+  /* Centra horizontalmente el contenido */
+  background-color: #E6E6E6;
+  /* Color de fondo gris claro */
+  padding: 20px;
+  /* Espacio interno para separar el contenido del borde */
+  border: 4px;
+  border-radius: 10px;
+}
+
+.mb-0 {
+  margin: 5px;
+}
+
+#botones {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}</style>

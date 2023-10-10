@@ -46,7 +46,7 @@ const router = createRouter({
 // Guarda de navegación
 router.beforeEach((to, from, next) => {
   const login = loginStore()
-  if (login.rol === "usuario" || login.rol === "administrador") {
+  if (login.perfil === "Grabador" || login.perfil === "Administrador") {
     if (to.name === "Home") {
       next({ name: "Bienvenida" });
     } else {

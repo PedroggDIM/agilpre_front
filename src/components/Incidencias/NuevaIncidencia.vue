@@ -1,7 +1,12 @@
+<script setup>
+import Navbar from "@/components/Navbar.vue"
+</script>
+
 <script>
-import Calendar from "primevue/calendar"
-import { mapState, mapActions } from 'pinia'
-import { incidenciasStore } from '@/stores/incidencias.js'
+import Calendar from "primevue/calendar";
+import { mapState, mapActions } from 'pinia';
+import { incidenciasStore } from '@/stores/incidencias.js';
+import { loginStore } from "@/stores/loginStore";
 
 export default {
    props: {},
@@ -50,7 +55,8 @@ export default {
   methods: {
     ...mapActions(incidenciasStore, ['getIncidencias', 'guardarIncidenciaStore']),
 
-    guardarIncidencia(incidencia) {          
+    guardarIncidencia(incidencia) {      
+        debugger;    
         console.log(JSON.stringify(incidencia))
         console.log(incidencia);        
         this.guardarIncidenciaStore(incidencia)
@@ -69,12 +75,20 @@ export default {
     },
   },
   created() {
+    debugger;
+    const dataSesion = loginStore().recuperarSesion();
+    this.incidencia.unidad = dataSesion.unidad;
+    this.incidencia.zona = dataSesion.zona;
+
     this.getIncidencias();
   },
 };
 </script>
 
 <template>
+  <div>
+    <Navbar />
+  </div>
   <p>
   Incidencia enviará:  {{ incidencia }}
   </p>

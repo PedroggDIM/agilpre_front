@@ -1,5 +1,5 @@
 <script>
-import { loginStore } from "@/stores/loginStore"
+import { loginStore } from "@/stores/loginStore";
 
 export default {
   data() {
@@ -12,15 +12,24 @@ export default {
     }
   },
   methods: {
-    async iniciarSesion() {
+    iniciarSesion() {
+      //this.$router.push("/bienvenida");
       // Esperar a que loginstore se comunique con la api y guardar respuesta
-      const exito = await loginStore().iniciarSesion(this.usuario.nombre, this.usuario.clave)
-      
-      if (exito) {
-        this.$router.push("/bienvenida")
-      } else {
-        this.errorInicioSesion = true
-      }
+      loginStore().iniciarSesion(this.usuario.nombre, this.usuario.clave).then(
+        (res) => {
+          debugger;
+          console.log(res.data);
+
+          loginStore().establecerSesion(res.data);
+
+          this.$router.push("/bienvenida");
+        }
+      ).catch((e) => {
+        console.error(e);
+        this.errorInicioSesion = true;
+
+      });
+
     },
     resetearFormulario() {
       this.usuario.nombre = ""

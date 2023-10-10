@@ -1,22 +1,46 @@
 import { defineStore } from "pinia"
 import sha1 from "crypto-js/sha1";
+import axios from "axios";
 
 export const loginStore = defineStore("login", {
   state: () => ({
-    rol: "",
-    nombre: ""
+    correo: "",
+    perfil: '',
+    zona: '',
+    unidad: ''
   }),
   actions: {
     iniciarSesion(nombreUsuario, claveUsuario) {
-      // Se necesita una llamada a la API aqui.
-      this.nombre = nombreUsuario
-      // Haremos un SHA1 de la clave y la enviaremos a la API.
-      let clave = sha1(claveUsuario).toString();  
-      console.log("Clave: ",clave) // Este lo borramos cuando la api este funcionando.
+      const clave = sha1(claveUsuario).toString();
 
-      let exito = true // Segun la respuesta de la api daremos true o false.
-      this.rol = "usuario" // Lo traemos de la api solo en caso de true.
-      return exito;
+      let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: 'http://localhost:8080/api/login',
+        headers: {},
+      };
+      let body = {
+        correo: nombreUsuario,
+        contrasenia: claveUsuario
+      }; // cambiar por clave cuando en la base de datos se cifre la contraseña
+
+      config.data = body,
+        config.headers['Content-Type'] = 'application/json'
+
+      return axios.request(config);
+    },
+
+    establecerSesion(data){
+       // Se necesita una llamada a la API aqui.
+       this.correo = data.correo
+       this.perfil = data.perfil;
+       this.zona = data.zona;
+       this.unidad = data.unidad;
+
+    },
+
+    recuperarSesion(){
+      return {correo: this.correo, perfil: this.perfil, zona: this.zona, unidad: this.unidad};
     },
 
     cerrarSesion() {

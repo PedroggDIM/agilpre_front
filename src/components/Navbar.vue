@@ -3,15 +3,24 @@ import { mapActions, mapState } from "pinia"
 import { loginStore } from "@/stores/loginStore"
 
 export default {
+  data() {
+    return {
+      dataSession: null,
+    }
+  },
   computed: {
-    ...mapState(loginStore, ["rol","nombre"]),
+    ...mapState(loginStore, ["perfil","correo"]),
   },
   methods: {
-    ...mapActions(loginStore, ["cerrarSesion"]),
+    ...mapActions(loginStore, ["cerrarSesion", "recuperarSesion"]),
     cerrarSesionNav() {
       this.cerrarSesion();
       this.$router.push({ name: "Home" });
     },
+  },
+  created() {
+    this.dataSession = this.recuperarSesion();
+    console.log(this.dataSession);
   },
 }
 </script>
@@ -42,11 +51,11 @@ export default {
         <ul class="navbar-nav">
           <router-link class="nav-link" to="/nuevaIncidencia">Crear Incidencia</router-link>
           <router-link class="nav-link" to="/gestionarIncidencias">Gestionar Incidencias</router-link>
-          <router-link class="nav-link" to="/gestionarIncidenciasSABAS">Gestionar Incidencias SABAS</router-link>
+          <router-link  v-if="dataSession && dataSession.perfil === 'Administrador'" class="nav-link" to="/gestionarIncidenciasSABAS">Gestionar Incidencias SABAS</router-link>
         </ul>
         <ul class="navbar-nav ms-auto">
           <!-- Desplegable de usuario -->
-          <li v-if="rol !== ''" class="nav-item dropdown">
+          <li v-if="perfil !== ''" class="nav-item dropdown">
             <a
               class="nav-link dropdown-toggle"
               href="#"
@@ -59,12 +68,12 @@ export default {
             </a>
             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-end" aria-labelledby="usuarioDropdown">
               <li class="dropdown-item">
-                <strong>{{ nombre }}</strong>
+                <strong v-if="dataSession">{{ dataSession.correo }}</strong>
               </li>
               <li class="dropdown-item">
                 {{ rol }}
               </li>
-              <li class="dropdown-divider"></li>
+              <li class="dropdown-divider" v-if="dataSession">{{dataSession.correo}}</li>
               <li class="dropdown-item">
                 <button class="btn btn-link" @click="cerrarSesionNav()">Cerrar Sesión</button>
               </li>

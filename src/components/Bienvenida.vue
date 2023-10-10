@@ -1,3 +1,7 @@
+<script setup>
+import Navbar from "@/components/Navbar.vue"
+</script>
+
 <script>
 export default {
   data() {
@@ -9,6 +13,9 @@ export default {
 </script>
 
 <template>
+  <div>
+    <Navbar />
+  </div>
   <!-- Zona que invita a crear una incidencia -->
   <div>
     <div class="card_header">

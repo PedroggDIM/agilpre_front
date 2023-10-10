@@ -1,15 +1,12 @@
 <script setup>
-import Navbar from "@/components/Navbar.vue"
+
 import Footer from "@/components/Footer.vue"
 </script>
 
 <template>
   <div class="contenido-aplicacion">
     <div class="contenedor-principal">
-    <!-- Navbar -->
-      <div>
-        <Navbar />
-      </div>
+    
 
       <div class="contenedor-vistas">
         <router-view />
