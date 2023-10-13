@@ -47,12 +47,31 @@ export default {
           metrosCuadrados: 0,
           _links: ''         
       }, 
+      $form: null, 
     };
   },
   computed: {
     ...mapState(incidenciasStore, ['incidencias']),
   },
   methods: {
+    async handleSubmit() {
+      try {
+        const response = await fetch(this.$form.action, {
+          method: this.$form.method,
+          body: new FormData(this.$form),
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          this.reset();
+          alert('Gracias');
+        }
+      } catch (error) {
+        console.error('Error al enviar el formulario:', error);
+      }
+    },
     ...mapActions(incidenciasStore, ['getIncidencias', 'guardarIncidenciaStore']),
 
     guardarIncidencia(incidencia) {      
@@ -60,7 +79,7 @@ export default {
         console.log(JSON.stringify(incidencia))
         console.log(incidencia);        
         this.guardarIncidenciaStore(incidencia)
-        this.limpiarIncidencia();
+     // this.limpiarIncidencia();
     },
     limpiarIncidencia() {
       this.incidencia.fechaInicio = ''
@@ -71,7 +90,8 @@ export default {
       this.incidencia.infoAdicio_grabador = '';
       this.incidencia.descripcion = '';
       this.incidencia.disponible = '';
-      this.incidencia.categoria = ''   
+      this.incidencia.categoria = '' 
+      document.getElementById("form").reset(); 
     },
   },
   created() {
@@ -84,49 +104,52 @@ export default {
   },
 };
 </script>
-
 <template>
   <div>
     <Navbar />
-  </div>
-  <p>
-  Incidencia enviará:  {{ incidencia }}
-  </p>
-  <br>
-  <div class="container-fluid ancho">
+    <p>Incidencia enviará: {{ incidencia }}</p>
+
+<!-- Para el envio del @ uso de api formsubmit -->
+<!-- <form action="https://formsubmit.co/pedrogilgil447@gmail.com" method="POST" target="_blank"> -->
+  <!-- Para el envío del @ uso la api Formspree -->
+  <form id="form" class="form" action="https://formspree.io/f/meqbvewr" method="POST" target="_blank">
+<div class="container-fluid ancho">
     <h3 class="titulo">Formulario de grabación de incidencias</h3> 
     <div class="row mt-3"> 
       <div class="col">
-       <div class="row">
-         <div class="col-12 col-md-6 mb-3">
-           <p class="margeninput">Zona</p>
-           <input type="text" placeholder="Zona destino usuario" class="form-control" v-model="incidencia.zona" />     
-         </div>
-         <div class="col-12 col-md-6 mb-3">
-           <p class="margeninput">Unidad</p>
-           <input type="text" placeholder="Introduzca la Unidad del usuario" class="form-control" v-model="incidencia.unidad" /> 
-         </div>    
-  </div>
+        <div class="row">
+          <div class="col-12 col-md-6 mb-3">
 
-  <div class="row">
-    <div class="col-12 col-md-4 mb-3">     
-      <p class="margeninput">Fecha de inicio de la incidencia</p>
-      <Calendar v-model.trim="incidencia.fechaInicio" dateFormat="dd/MM/yy"></Calendar>      
-    </div>
-    <div class="col-12 col-md-4 mb-3">
-      <p class="margeninput">Fecha fin de la incidencia</p>
-      <Calendar v-model.trim="incidencia.fechaFin" dateFormat="dd/MM/yy"></Calendar>
-    </div>
-    <div class="col-12 col-md-4 mb-3">     
-      <p class="margeninput">Número de días</p>
-      <input type="text" placeholder="Número de días" class="form-control" v-model="incidencia.numDias" />
-    </div>
-  </div>
+            <p class="margeninput">Zona</p>
+            <input type="text" name="zona" placeholder="Zona destino usuario" class="form-control" v-model="incidencia.zona" />
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <p class="margeninput">Unidad</p>
+            <input type="text" name="unidad" placeholder="Introduzca la Unidad del usuario" class="form-control" v-model="incidencia.unidad" />
+          </div>
+        </div>
+  
+        <div class="row">
+          <div class="col-12 col-md-4 mb-3">
+            <p class="margeninput">Fecha de inicio de la incidencia</p>
+            <input type="date" name="fechaInicio" v-model="incidencia.fechaInicio" dateFormat="dd/MM/yy" />
+          </div>
+          
+          <div class="col-12 col-md-4 mb-3">
+            <p class="margeninput">Fecha fin de la incidencia</p>
+            <input type="date" name="fechaFin" v-model="incidencia.fechaFin" dateFormat="dd/MM/yy" />
+          </div>
+        
+          <div class="col-12 col-md-4 mb-3">
+            <p class="margeninput">Número de días</p>
+            <input type="number" name="numDias" v-model="incidencia.numDias" />
+          </div>
+        </div>
                
   <div class="row">
     <div class="col-12 col-md-4 mb-3">     
       <p class="margeninput">Estado</p>
-				<select name="pais" id="estado" class="form-select" v-model="incidencia.estado">
+				<select name="estado" class="form-select" v-model="incidencia.estado">
 					 <option value="Comunicada a la empresa">Comunicada a la empresa</option>
 					 <option value="Comunicada a la empresa y resuelta">Comunicada a la empresa y resuelta</option>
 					 <option value="Enviada al SABAS">Enviada al SABAS</option>
@@ -136,29 +159,27 @@ export default {
 				</select> 
     </div>
     <div class="col-12 col-md-4 mb-3">
-      <p class="margeninput">Fecha de comunicación por correo a la empresa responsable</p>
-      <Calendar v-model.trim="incidencia.comunicaEmpresa" dateFormat="dd/MM/yy"></Calendar>
+      <p class="margeninput">Fecha de comunicación por correo a la empresa responsable</p> 
+      <input type="date" v-model.trim="incidencia.comunicaEmpresa" dateFormat="dd/MM/yy" />
     </div> 
-  </div>        
-        
-
+  </div>    
 <div class="my-2">
       <p class="margeninput">Seleccione el tipo de incidencia</p>     
       <div class="form-radio form-radio-inline">
         <div class="form-check form-check-inline">
-        <input type="radio" class="form-check-input" id="radio-1" v-model="incidencia.categoria" value="DeficienciaServicio" />
+        <input type="radio" name="categoria" class="form-check-input" id="radio-1" v-model="incidencia.categoria" value="DeficienciaServicio" />
         <label for="radio-1" class="form-check-label">Deficiencias o incumplimientos en la prestación del servicio</label>
         </div>
       </div>
       <div class="form-radio form-radio-inline">
         <div class="form-check form-check-inline">
-        <input type="radio" class="form-check-input" id="radio-2" v-model="incidencia.categoria" value="LimpiezaChoque" />
+        <input type="radio" name="categoria" class="form-check-input" id="radio-2" v-model="incidencia.categoria" value="LimpiezaChoque" />
         <label for="radio-2" class="form-check-label">Limpieza de choque</label>
         </div>
       </div>
       <div class="form-radio form-radio-inline">
         <div class="form-check form-check-inline">
-        <input type="radio" class="form-check-input" id="radio-3" v-model="incidencia.categoria" value="CambiosDependencia" />
+        <input type="radio" name="categoria" class="form-check-input" id="radio-3" v-model="incidencia.categoria" value="CambiosDependencia" />
         <label for="radio-3" class="form-check-label">Cambios en las dependencias de la Unidad</label>
         </div>
       </div>
@@ -180,6 +201,7 @@ export default {
           <div class="form-check form-check-inline">
             <input
               type="checkbox"
+              name="incumplimientos"
               class="form-check-input"
               id="check-1"
               v-model="incidencia.incumplimiento"
@@ -194,6 +216,7 @@ export default {
           <div class="form-check form-check-inline">
             <input
               type="checkbox"
+              name="incumplimientos"
               class="form-check-input"
               id="check-2"
               v-model="incidencia.incumplimiento"
@@ -208,6 +231,7 @@ export default {
           <div class="form-check form-check-inline">
             <input
               type="checkbox"
+              name="incumplimientos"
               class="form-check-input"
               id="check-3"
               v-model="incidencia.incumplimiento"
@@ -222,6 +246,7 @@ export default {
           <div class="form-check form-check-inline">
             <input
               type="checkbox"
+              name="incumplimientos"
               class="form-check-input"
               id="check-4"
               v-model="incidencia.incumplimiento"
@@ -236,6 +261,7 @@ export default {
           <div class="form-check form-check-inline">
             <input
               type="checkbox"
+              name="incumplimientos"
               class="form-check-input"
               id="check-5"
               v-model="incidencia.incumplimiento"
@@ -250,6 +276,7 @@ export default {
           <div class="form-check form-check-inline">
             <input
               type="checkbox"
+              name="incumplimientos"
               class="form-check-input"
               id="check-6"
               v-model="incidencia.incumplimiento"
@@ -264,6 +291,7 @@ export default {
           <div class="form-check form-check-inline">
             <input
               type="checkbox"
+              name="incumplimientos"
               class="form-check-input"
               id="check-7"
               v-model="incidencia.incumplimiento"
@@ -281,6 +309,7 @@ export default {
           <div class="form-check form-check-inline">
             <input
               type="checkbox"
+              name="incumplimientos"
               class="form-check-input"
               id="check-8"
               v-model="incidencia.incumplimiento"
@@ -295,6 +324,7 @@ export default {
           <div class="form-check form-check-inline">
             <input
               type="checkbox"
+              name="incumplimientos"
               class="form-check-input"
               id="check-9"
               v-model="incidencia.incumplimiento"
@@ -309,6 +339,7 @@ export default {
           <div class="form-check form-check-inline">
             <input
               type="checkbox"
+              name="incumplimientos"
               class="form-check-input"
               id="check-10"
               v-model="incidencia.incumplimiento"
@@ -323,6 +354,7 @@ export default {
           <div class="form-check form-check-inline">
             <input
               type="checkbox"
+              name="incumplimientos"
               class="form-check-input"
               id="check-11"
               v-model="incidencia.incumplimiento"
@@ -337,6 +369,7 @@ export default {
           <div class="form-check form-check-inline">
             <input
               type="checkbox"
+              name="incumplimientos"
               class="form-check-input"
               id="check-12"
               v-model="incidencia.incumplimiento"
@@ -351,6 +384,7 @@ export default {
           <div class="form-check form-check-inline">
             <input
               type="checkbox"
+              name="incumplimientos"
               class="form-check-input"
               id="check-13"
               v-model="incidencia.incumplimiento"
@@ -365,6 +399,7 @@ export default {
           <div class="form-check form-check-inline">
             <input
               type="checkbox"
+              name="incumplimientos"
               class="form-check-input"
               id="check-14"
               v-model="incidencia.incumplimiento"
@@ -381,6 +416,7 @@ export default {
           <div class="form-check form-check-inline">
             <input
               type="checkbox"
+              name="incumplimientos"
               class="form-check-input"
               id="check-15"
               v-model="incidencia.incumplimiento"
@@ -395,6 +431,7 @@ export default {
           <div class="form-check form-check-inline">
             <input
               type="checkbox"
+              name="incumplimientos"
               class="form-check-input"
               id="check-16"
               v-model="incidencia.incumplimiento"
@@ -409,6 +446,7 @@ export default {
           <div class="form-check form-check-inline">
             <input
               type="checkbox"
+              name="incumplimientos"
               class="form-check-input"
               id="check-17"
               v-model="incidencia.incumplimiento"
@@ -423,6 +461,7 @@ export default {
           <div class="form-check form-check-inline">
             <input
               type="checkbox"
+              name="incumplimientos"
               class="form-check-input"
               id="check-18"
               v-model="incidencia.incumplimiento"
@@ -437,6 +476,7 @@ export default {
           <div class="form-check form-check-inline">
             <input
               type="checkbox"
+              name="incumplimientos"
               class="form-check-input"
               id="check-19"
               v-model="incidencia.incumplimiento"
@@ -451,6 +491,7 @@ export default {
           <div class="form-check form-check-inline">
             <input
               type="checkbox"
+              name="incumplimientos"
               class="form-check-input"
               id="check-20"
               v-model="incidencia.incumplimiento"
@@ -465,6 +506,7 @@ export default {
           <div class="form-check form-check-inline">
             <input
               type="checkbox"
+              name="incumplimientos"
               class="form-check-input"
               id="check-21"
               v-model="incidencia.incumplimiento"
@@ -478,7 +520,7 @@ export default {
         <div class="col-12 mb-3">
           <div class="form-check form-check-inline">
             <input
-              type="checkbox"
+              type="checkbox"              
               class="form-check-input"
               id="check-22"
               v-model="incidencia.incumplimiento"
@@ -564,16 +606,38 @@ export default {
 
 </div>
 <p class="margeninput">Descripción</p>      
-  <textarea name="text" placeholder="Descripción de la incidencia" class="form-control" cols="30" rows="6" v-model="incidencia.descripcion" />
+  <textarea name="descripcion" placeholder="Descripción de la incidencia" class="form-control" cols="30" rows="6" v-model="incidencia.descripcion" />
     <p class="margeninput">Información adicional por parte del grabador</p>
-  <textarea name="text" placeholder="Información adicional de la incidencia" class="form-control" cols="30" rows="5" v-model="incidencia.infoAdicio_grabador" />                  
-    <button type="button" class="btn btn-success" @click="guardarIncidencia(incidencia)">
-      Enviar por correo a empresa responsable y GUARDAR
-    </button>       
+    <textarea placeholder="Información adicional de la incidencia" class="form-control" cols="30" rows="5" v-model="incidencia.infoAdicio_grabador" />                  
+
+  <div class="row">
+    <div class="col-4 mb-3">
+      <p class="margeninput">Seleccione la zona a la que pertenezca su Unidad</p>
+      <select class="form-select" required>
+        <option disabled selected>Seleccione una zona</option>
+        <option value="pedrogilgil447@gmail.com">Galicia, Asturias, Castilla y León, Castilla la Mancha, Extremadura y Madrid</option>
+        <option value="pedrogilgil447@gmail.com">Cantabria, País Vasco, Navarra, La Rioja, Aragón, Cataluña, Baleares</option>
+        <option value="pedrogilgil447@gmail.com">Valencia y Murcia, Andalucía, Ceuta, Melilla, Canarias</option>
+      </select>
+    </div>
+  </div>
+  
+  
+  <button  class="btn btn-success" @click="guardarIncidencia(incidencia)" type="submit" value="Enviar">
+    Enviar por correo a empresa responsable y GUARDAR
+  </button>&nbsp;
+
+  <input type="button" @click="limpiarIncidencia()" value="Limpiar formulario" style="background-color: green;">
+  
+
    </div>
   </div>
-</div>   
+</div>  
 
+<input type="hidden" name="_captcha" value="false">
+
+</form>
+</div>
 </template>
 
 <style>
@@ -599,5 +663,4 @@ export default {
   color: #0B3B2E; 
 }
 </style>
-
 
