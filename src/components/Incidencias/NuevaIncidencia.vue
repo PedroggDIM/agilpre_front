@@ -54,24 +54,6 @@ export default {
     ...mapState(incidenciasStore, ['incidencias']),
   },
   methods: {
-    async handleSubmit() {
-      try {
-        const response = await fetch(this.$form.action, {
-          method: this.$form.method,
-          body: new FormData(this.$form),
-          headers: {
-            'Accept': 'application/json'
-          }
-        });
-
-        if (response.ok) {
-          this.reset();
-          alert('Gracias');
-        }
-      } catch (error) {
-        console.error('Error al enviar el formulario:', error);
-      }
-    },
     ...mapActions(incidenciasStore, ['getIncidencias', 'guardarIncidenciaStore']),
 
     guardarIncidencia(incidencia) {      
@@ -112,7 +94,7 @@ export default {
 <!-- Para el envio del @ uso de api formsubmit -->
 <!-- <form action="https://formsubmit.co/pedrogilgil447@gmail.com" method="POST" target="_blank"> -->
   <!-- Para el envío del @ uso la api Formspree -->
-  <form id="form" class="form" action="https://formspree.io/f/meqbvewr" method="POST" target="_blank">
+<form id="form" class="form" action="https://formspree.io/f/meqbvewr" method="POST" target="_blank">
 <div class="container-fluid ancho">
     <h3 class="titulo">Formulario de grabación de incidencias</h3> 
     <div class="row mt-3"> 

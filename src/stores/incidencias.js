@@ -1,28 +1,25 @@
 import { defineStore } from "pinia";
 import {
   getIncidencias,
-  guardarIncidencia 
+  guardarIncidencia, getEstadisticasPorParametroApi
        } from './api-service';
 import { loginStore } from "@/stores/loginStore";
 
 export const incidenciasStore = defineStore("incidencias", {
   state: () => ({
-    incidencias: []
+    incidencias: [],
+    numIncidencias: 0
   }),
   actions: {
-    
-    getIncidencias() {
+        getIncidencias() {
       const dataSession = loginStore().recuperarSesion();
       debugger
       getIncidencias(dataSession).then((response) => {
         debugger;
-        this.incidencias = response.data._embedded.incidenciaModels;
-        // this.incidencias.forEach((incidencia) => {
-        //   this.formatearFecha(incidencia);
-        // });
+        this.incidencias = response.data._embedded.incidenciaModels
+
       });
-    },  
-    
+    },      
     getIncidenciaPorId(id) {
       return this.incidencias.find((p) => p.id == id);
     },
@@ -30,10 +27,17 @@ export const incidenciasStore = defineStore("incidencias", {
     //  debugger;
       console.log("guardarIncidendia en incidencias.js"+incidencia); 
       guardarIncidencia(incidencia)
-      //return guardarIncidencia(incidencia);
     },
-    // eliminarIncidencia(incidencia) {
-    //   return borrarIncidencia(incidencia);
-    // },   
+   
+   async getEstadisticasPorParametro(estadoValor, fechaInicioValor, fechaFinValor) {
+       getEstadisticasPorParametroApi(estadoValor, fechaInicioValor, fechaFinValor)
+      .then((response) => {      
+        console.log("incidencias....................................." + response.data)
+        this.numIncidencias = response.data; 
+      })
+      .catch((error) => {      
+        console.error("Error al obtener estadísticas: ", error);
+      });
   },
-});
+},
+})

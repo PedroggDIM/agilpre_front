@@ -48,11 +48,32 @@ export default {
       </div>
 
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
+   <!-- <ul class="navbar-nav">
           <router-link class="nav-link" to="/nuevaIncidencia">Crear Incidencia</router-link>
           <router-link class="nav-link" to="/gestionarIncidencias">Gestionar Incidencias</router-link>
           <router-link  v-if="dataSession && dataSession.perfil === 'Administrador'" class="nav-link" to="/gestionarIncidenciasSABAS">Gestionar Incidencias SABAS</router-link>
-        </ul>
+          <router-link  v-if="dataSession && dataSession.perfil === 'Administrador'" class="nav-link" to="/Estadistica">Estadísticas</router-link>
+        </ul>  -->        
+        <router-link class="nav-link"
+        to="/NuevaIncidencia"
+        :class="{ 'text-warning': $route.name === 'NuevaIncidencia' }"
+      >Crear Incidencia</router-link>
+      
+      <router-link class="nav-link"
+        to="/GestionarIncidencias"
+        :class="{ 'text-warning': $route.name === 'GestionarIncidencias' }"
+      >Gestionar Incidencias</router-link>
+      
+      <router-link v-if="dataSession && dataSession.perfil === 'Administrador'" class="nav-link"
+        to="/GestionarIncidenciasSABAS"
+        :class="{ 'text-warning': $route.name === 'GestionarIncidenciasSABAS' }"
+      >Gestionar Incidencias SABAS</router-link>
+      
+      <router-link v-if="dataSession && dataSession.perfil === 'Administrador'" class="nav-link"
+        to="/Estadistica"
+        :class="{ 'text-warning': $route.name === 'Estadistica' }"
+      >Estadísticas</router-link>
+
         <ul class="navbar-nav ms-auto">
           <!-- Desplegable de usuario -->
           <li v-if="perfil !== ''" class="nav-item dropdown">
@@ -87,7 +108,7 @@ export default {
 
 <style scoped>
 .navbar {
-  background: black; /* Fondo negro */
+  background: #007d5c !important;
   color: white; /* Letras blancas */
   height: auto;
   display: flex;

@@ -35,3 +35,9 @@ export function getEntidades(nombre, method, body) {
 export function getIncidencias(dataSession) {
   return getEntidades("incidencias/all", "post", dataSession);
 }
+
+export function getEstadisticasPorParametroApi(estadoValor, fechaInicioValor, fechaFinValor)  {
+ return llamadaApi(`${host}/incidencias/obtenerNumeroIncidencias?estado=${estadoValor}&fechaInicio=${fechaInicioValor}&fechaFin=${fechaFinValor}`, 'get', null)
+}
+
+
