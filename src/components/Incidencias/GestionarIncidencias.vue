@@ -3,11 +3,13 @@ import Navbar from "@/components/Navbar.vue"
 </script>
 <script>
 import { mapActions, mapState } from 'pinia'
-import axios from 'axios'
 import { incidenciasStore } from '@/stores/incidencias.js';
+import moment from "moment";
 
 export default {
   props: ['incidencia'],
+  emits: ["editarIncidencia"],
+
   data() {
     return {
       estados: [
@@ -32,6 +34,9 @@ export default {
     },
   },
   methods: {
+    formatDate(date) {
+      return moment(date).format("YYYY/MM/DD");
+    },
   }
 }
 </script>
@@ -48,23 +53,21 @@ export default {
         <option v-for="estado in estados" :key="estado" :value="estado">{{ estado }}</option>
       </select>
       <div class="row">
-
-        <div class="col-12 col-md-6 mb-3">
+        <div class="col-12 col-md-10 mb-3">
 
           <div v-for="incidencia in filtroDeBusqueda" :key="incidencia.id" class="card m-0 p-0">
             <!-- <div class="card-header text-primary"><strong>Estado: </strong>{{ incidencia.estado }}</div>             -->
-
             <div class="card">
 
-              <p class="mb-0"><strong>Id: </strong>{{ incidencia.id }}</p>
+              <p class="mb-0"><strong>Número de incidencia: </strong>{{ incidencia.id }}</p>
               <p class="mb-0"><strong>Zona: </strong>{{ incidencia.zona }}</p>
               <p class="mb-0"><strong>Unidad: </strong>{{ incidencia.unidad }}</p>
-              <p class="mb-0"><strong>Fecha inicio: </strong>{{ incidencia.fechaInicio }}</p>
-              <p class="mb-0"><strong>Fecha fin: </strong>{{ incidencia.fechaFin }}</p>
+              <p class="mb-0"><strong>Fecha inicio: </strong>{{ formatDate(incidencia.fechaInicio) }}</p>
+              <p class="mb-0"><strong>Fecha fin: </strong>{{ formatDate(incidencia.fechaFin) }}</p>
               <p class="mb-0"><strong>Duración en días: </strong>{{ incidencia.numDias }}</p>
               <p class="mb-0"><strong>Estado: </strong>{{ incidencia.estado }}</p>
-              <p class="mb-0"><strong>Fecha de comunicación a empresa responsable: </strong>{{
-                incidencia.comunicaEmpresa }}</p>
+              <p class="mb-0"><strong>Fecha de comunicación a la empresa: </strong>{{
+                formatDate(incidencia.comunicaEmpresa) }}</p>
               <p class="mb-0"><strong>Información adicional añadida por el grabador: </strong>{{
                 incidencia.infoAdicio_grabador }}</p>
               <p class="mb-0"><strong>Descripción: </strong>{{ incidencia.descripcion }}</p>
@@ -80,7 +83,7 @@ export default {
               <div v-if="incidencia.categoria === 'LimpiezaChoque'">
                 <div class="container-fluid LimpiezaChoque">
                   <h5>Limpieza de choque:</h5>
-                  Tipo de choque: {{ incidencia.tipoChoque }}
+                  Tipo de choque: {{ incidencia.tipoChoque }}<br>
                   Gravedad: {{ incidencia.gravedad }}
                 </div>
               </div>
@@ -88,28 +91,21 @@ export default {
               <div v-if="incidencia.categoria === 'CambiosDependencia'">
                 <div class="container-fluid LimpiezaChoque">
                   <h5>Cambios en las dependencias oficiales:</h5>
-                  Tipo de cambio: {{ incidencia.tipoCambio }}
-                  Dependencias afectadas: {{ incidencia.tipoDependencia }}
+                  Tipo de cambio: {{ incidencia.tipoCambio }}<br>
+                  Dependencias afectadas: {{ incidencia.tipoDependencia }}<br>
                   Superficie afectada en metros: {{ incidencia.metrosCuadrados }}
                 </div>
               </div>
               <div class="col-12 col-md-12 mb-3" id="botones">
                 <button type="button" class="btn btn-success">Enviar al SABAS</button>&nbsp;
-                <button type="button" class="btn btn-success">Editar</button>
+                <!-- <button type="button" class="btn btn-warning" @click="editarIncidencia(incidencia)">Editar</button> -->
+                <button type="button" class="btn btn-warning">Editar</button>
               </div>
-
             </div>
-
-
-
-
           </div>
-
-
         </div>
       </div>
     </div>
-
   </div>
 </template>
 <style>
@@ -133,4 +129,5 @@ export default {
   display: flex;
   align-items: center;
   margin-top: 10px;
-}</style>
+}
+</style>
