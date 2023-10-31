@@ -66,23 +66,20 @@ export default {
       console.log(incidencia);
       if (this.validarFormulario()) {
         //Mensaje de confirmación del envío de la incidencia
+        this.guardarIncidenciaStore(incidencia)
         this.mensajeConfirmaGuardado()
         //Limpieza de los campos tras el envío de la incidencia       
         //   this.limpiarIncidencia();           
       }
 
     },
-    mensajeConfirmaGuardado() {
-      // Ventana de confirmación de guardado de la incidencia y envío del correo.
+    mensajeConfirmaGuardado() {      
       ventanaMensaje.innerHTML = "";
-      document.getElementById("ventanaMensaje").style.display = "block";
-      // obtengo en la variable texto el texto de practica
-      let texto = "Su incidencia ha sido enviada por correo y Guardada en el sistema";
-      // añado el texto de practica  en el div creado.
+      document.getElementById("ventanaMensaje").style.display = "block";      
+      let texto = "Su incidencia ha sido enviada por correo y Guardada en el sistema";      
       let mens = (document.textContent = texto);
       let elementoHtml = document.getElementById("ventanaMensaje");
-      elementoHtml.append(mens);
-      // establezco que el mensaje se cierra automáticamente pasados 10 segudos.
+      elementoHtml.append(mens);      
       setTimeout(function () {
         document.getElementById("ventanaMensaje").style.display = "none";
       }, 10000);
@@ -195,7 +192,7 @@ export default {
   <div>
     <Navbar />
   </div>
-  <!-- <p>Incidencia enviará: {{ incidencia }}</p> -->
+  <p>Incidencia enviará: {{ incidencia }}</p>
   <!-- Para el envio del @ uso de api formsubmit -->
   <form action="https://formsubmit.co/pedrogilgil447@gmail.com" method="POST" target="_blank" id="form">
     <!-- Para el envío del @ uso la api Formspree -->
@@ -286,12 +283,9 @@ export default {
             <div id="tooltip" class="container-fluid incumplimiento">
               <span id="tooltiptext">Seleccione los incumplimientos, en el caso de que ninguno coincida con el
                 incumplimiento observado en su Unidad, descríbalo en el apartado "Descripción".</span>
-
               <div class="row">
-
                 <div class="col-12 col-md-12 mb-3">
                   <div class="container-fluid distribuyeIncumpliminetoscolumnas">
-
                     <div class="row mt-3">
                       <div class="col">
                         <div class="row">
@@ -728,11 +722,9 @@ export default {
   text-align: center;
   border-radius: 6px;
   padding: 5px 0;
-  /* Position the tooltip */
   position: absolute;
   z-index: 1;
   bottom: -30px;
-  /* Puedes ajustar esta distancia según tus necesidades */
 }
 
 #ventanaMensaje {
@@ -741,7 +733,6 @@ export default {
   color: beige;
   font-size: 30px;
   font-family: "Times New Roman", Times, serif;
-  /* Establece el estilo de fuente a Times New Roman */
   text-align: center;
   padding: 30px;
   min-height: 100px;
@@ -750,7 +741,5 @@ export default {
   left: 35%;
   top: 25%;
   display: none;
-  /* hago que por defecto no se vea el mensaje*/
 }
 </style>
-

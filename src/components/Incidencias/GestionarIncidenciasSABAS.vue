@@ -33,12 +33,11 @@ export default {
           render: function (data, type, row, meta) {
             return `<button class="btn btn-success" @click="editarIncidencia(${row.id})">Editar${row.id}</button>
                   <button class="btn btn-primary" @click="editarIncidencia(${row.id})">Consultar</button>
-                  <button class="btn btn-danger" @click="editarIncidencia(${row.id})">Eliminar</button>       
-        `}
+                  <button class="btn btn-danger" @click="editarIncidencia(${row.id})">Eliminar</button>`
+          }
         },
         { data: 'id' },
         { data: 'fechaInicio' },
-
         { data: 'numDias' },
         { data: 'estado' },
         { data: 'comunicaEmpresa' },
@@ -47,9 +46,7 @@ export default {
         { data: 'infoAdicio_grabador' },
         { data: 'unidad' },
         { data: 'zona' },
-
       ],
-
     };
   },
   created() {
@@ -58,15 +55,15 @@ export default {
   },
   computed: {
     ...mapState(incidenciasStore, ['getIncidencias', 'incidencias']),
-
   },
   methods: {
     editarIncidencia(id) {
+      debugger;
       console.log(`Editar incidencia con ID: ${id}`);
-      window.alert(`Editar incidencia con ID: ${id}`);
-    },
+    }
   },
 }
+
 </script>
 
 <template>
@@ -74,11 +71,9 @@ export default {
     <Navbar />
   </div>
   <h5>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp Gestión y reportes de incidencias</h5>
-  
   <div class="row">
     <div class="ancho">
       <div class="table-responsive">
-
         <DataTable :data="incidencias" :columns="columns" class="table table-striped table-bordred display" :options="{
           responsive: true, autoWidth: false, dom: 'Bfrtip', language: {
             search: 'Buscar', zeroRecords: 'No hay registros para mostrar',
@@ -92,7 +87,6 @@ export default {
               <th>Gestión</th>
               <th>Número</th>
               <th>Fecha de inicio</th>
-
               <th>Días</th>
               <th>Estado</th>
               <th>Conocimiento Empresa</th>
@@ -101,20 +95,13 @@ export default {
               <th>Actualizaciones</th>
               <th>Unidad</th>
               <th>Zona</th>
-
-
-
-
-
             </tr>
           </thead>
         </DataTable>
       </div>
     </div>
   </div>
-
   <!-- <h6 v-for="item of incidencias">{{ item }}</h6> -->
-
   <!-- <p class="mb-0"><strong>Id: </strong>{{ incidencia.id }}</p>
           <p class="mb-0"><strong>Zona: </strong>{{ incidencia.zona }}</p>  
           <p class="mb-0"><strong>Unidad: </strong>{{ incidencia.unidad }}</p>  
@@ -130,16 +117,12 @@ export default {
 <style>
 .ancho {
   width: 95%;
-  margin: 0 auto;
-  /* Centra horizontalmente el contenido */
-  background-color: #E6E6E6;
-  /* Color de fondo gris claro */
-  padding: 20px;
-  /* Espacio interno para separar el contenido del borde */
+  margin: 0 auto;  
+  background-color: #E6E6E6;  
+  padding: 20px;  
   border: 4px;
   border-radius: 10px;
 }
-
 .mb-0 {
   margin: 5px;
 }

@@ -21,12 +21,21 @@ export function llamadaApi(path, method, body) {
 }
 export function guardarIncidencia(incidencia) {
   // debugger;
+  console.log(incidencia)
+  console.log(incidencia._links)
   console.log("guardarIncidendia en api-service.js" + incidencia);
   if (incidencia._links) {
-    return llamadaApi(cambiarHttpPorHttps(incidencia._links.self.href), 'put', incidencia);
+   // return llamadaApi(cambiarHttpPorHttps(incidencia._links.self.href), 'put', incidencia);
+    return llamadaApi(`${host}/incidencias/${incidencia.id}`, 'put', incidencia);
+    console.log("En put")
   } else {
     return llamadaApi(`${host}/incidencias`, 'post', incidencia);
   }
+  // const url = incidencia._links
+  //   ? cambiarHttpPorHttps(incidencia._links.self.href)
+  //   : `${host}/incidencias`;
+  // const method = incidencia._links ? "put" : "post";
+  // return llamadaApi(url, method, incidencia);
 }
 
 export function getEntidades(nombre, method, body) {
@@ -39,5 +48,6 @@ export function getIncidencias(dataSession) {
 export function getEstadisticasPorParametroApi(estadoValor, fechaInicioValor, fechaFinValor)  {
  return llamadaApi(`${host}/incidencias/obtenerNumeroIncidencias?estado=${estadoValor}&fechaInicio=${fechaInicioValor}&fechaFin=${fechaFinValor}`, 'get', null)
 }
+
 
 
