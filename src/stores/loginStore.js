@@ -16,7 +16,8 @@ export const loginStore = defineStore("login", {
       let config = {
         method: 'post',
         maxBodyLength: Infinity,
-        url: 'http://localhost:8080/api/login',
+      //  url: 'http://localhost:8080/api/login',
+        url: 'https://agilpreapi-tgin2ryd.b4a.run/api/login',
         headers: {},
       };
       let body = {

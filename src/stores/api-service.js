@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const host = "http://localhost:8080/api";
+// const host = "http://localhost:8080/api";
+ const host = "https://agilpreapi-tgin2ryd.b4a.run/api";
 
 export function cambiarHttpPorHttps(enlace) {
   return enlace.replace("http", "https");
@@ -19,6 +20,7 @@ export function llamadaApi(path, method, body) {
   }
   return axios.request(config)
 }
+
 export function guardarIncidencia(incidencia) {
   // debugger;
   console.log(incidencia)
@@ -47,6 +49,14 @@ export function getIncidencias(dataSession) {
 
 export function getEstadisticasPorParametroApi(estadoValor, fechaInicioValor, fechaFinValor)  {
  return llamadaApi(`${host}/incidencias/obtenerNumeroIncidencias?estado=${estadoValor}&fechaInicio=${fechaInicioValor}&fechaFin=${fechaFinValor}`, 'get', null)
+}
+
+export function borrarIncidencia(incidencia) {
+  console.log('en api-service' +JSON.stringify(incidencia))
+  console.log('en api-service' +incidencia )
+  
+  return llamadaApi(cambiarHttpPorHttps(incidencia._links.self.href), "delete");
+  
 }
 
 

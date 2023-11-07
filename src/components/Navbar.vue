@@ -48,26 +48,26 @@ export default {
       </div>
 
       <div class="collapse navbar-collapse" id="navbarNav">
-   <!-- <ul class="navbar-nav">
-          <router-link class="nav-link" to="/nuevaIncidencia">Crear Incidencia</router-link>
-          <router-link class="nav-link" to="/gestionarIncidencias">Gestionar Incidencias</router-link>
-          <router-link  v-if="dataSession && dataSession.perfil === 'Administrador'" class="nav-link" to="/gestionarIncidenciasSABAS">Gestionar Incidencias SABAS</router-link>
-          <router-link  v-if="dataSession && dataSession.perfil === 'Administrador'" class="nav-link" to="/Estadistica">Estadísticas</router-link>
-        </ul>  -->        
+     
         <router-link class="nav-link"
         to="/NuevaIncidencia"
         :class="{ 'text-warning': $route.name === 'NuevaIncidencia' }"
       >Crear Incidencia</router-link>
       
-      <router-link class="nav-link"
+      <router-link v-if="dataSession && dataSession.perfil === 'Grabador'" class="nav-link"
         to="/GestionarIncidencias"
         :class="{ 'text-warning': $route.name === 'GestionarIncidencias' }"
-      >Gestionar Incidencias</router-link>
+      >Gestionar Incidencias Grabador</router-link>
+
+      <router-link v-if="dataSession && dataSession.perfil === 'Administrador'" class="nav-link"
+        to="/GestionarInciSabas"
+        :class="{ 'text-warning': $route.name === 'GestionarInciSabas' }"
+      >Gestionar Incidencias SABAS</router-link>
       
       <router-link v-if="dataSession && dataSession.perfil === 'Administrador'" class="nav-link"
-        to="/GestionarIncidenciasSABAS"
-        :class="{ 'text-warning': $route.name === 'GestionarIncidenciasSABAS' }"
-      >Gestionar Incidencias SABAS</router-link>
+        to="/ReportesSabas"
+        :class="{ 'text-warning': $route.name === 'ReportesSabas' }"
+      >Reportes</router-link>
       
       <router-link v-if="dataSession && dataSession.perfil === 'Administrador'" class="nav-link"
         to="/Estadistica"

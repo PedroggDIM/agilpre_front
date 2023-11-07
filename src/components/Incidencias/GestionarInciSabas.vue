@@ -1,6 +1,13 @@
+<script setup>
+import Navbar from "@/components/Navbar.vue"
+</script>
+
 <script>
 import { mapActions, mapState } from 'pinia'
 import { incidenciasStore } from '@/stores/incidencias.js';
+
+import { borrarIncidencia } from "@/stores/api-service.js";
+
 import moment from "moment";
 import { ref } from 'vue'; 
 import 'primevue/resources/primevue.min.css'; // Estilo de PrimeVue
@@ -8,14 +15,16 @@ import 'primeicons/primeicons.css'; // Iconos de PrimeIcons
 import Paginator from 'primevue/paginator';
 
 export default {
+  
   props: ['incidencia'],
   components: {
-    Paginator,
+    Paginator, 
   },
   emits: ["editarIncidencia"],
 
   data() {
     return {
+    //  incidencia,
       estados: [
         'Comunicada a la empresa',
         'Comunicada a la empresa y resuelta',
@@ -46,6 +55,9 @@ export default {
     },
   },
   methods: {
+    
+    ...mapActions(incidenciasStore, ["getIncidencias", "eliminarIncidencia"]),
+
     onPageChange(event) {
       console.log(this.first)
     this.first = event.first;
@@ -61,14 +73,29 @@ export default {
     formatDate(date) {
       return moment(date).format("YYYY/MM/DD");
     },
-    editarIncidencia(incidencia) {
-      // Emite el evento 'editarIncidencia' con la incidencia y su id
-      this.$emit("editarIncidencia", {
-        id: incidencia.id,
-        data: incidencia
+
+    borrarIncidenciaSabas(incidencia) { 
+      console.log(incidencia)   
+      if (confirm("¿Estás seguro de que deseas borrar la incidencia?")) {
+
+        this.eliminarIncidencia(incidencia).then((r) => {
+          console.log('aquí' + incidencia)
+        if (r.data) {
+          let eliminado = false;
+          for (let i = 0; i < this.incidencias.length && !eliminado; i++) {
+            let incidenciaAux = this.incidencias[i];
+            if (incidenciaAux.id === incidencia.id) {
+              eliminado = true;
+              this.incidencias.splice(i, 1);
+            }
+          }
+        }
+        
       });
+        
+      }     
+
     },
-    
   }
 }
 </script>
@@ -77,7 +104,7 @@ export default {
   <div>
     <Navbar />
   </div>
-
+  <!-- <EditaincidenSabas :incidencia="incidencia" /> -->
   <div class="container-fluid ancho">
     <div>
       <h5>Buscar por Estado</h5>
@@ -91,6 +118,7 @@ export default {
           <thead>
             <tr>
               <th scope="col">Número</th>
+              <th scope="col">Unidad</th>
               <th scope="col">Inicio</th>
               <th scope="col">Comunica</th>
               <th scope="col">Estado</th>
@@ -104,6 +132,7 @@ export default {
             <!-- Utilizo v-for solo para las filas de la tabla -->
             <tr v-for="(incidencia, index) in visibleIncidencias" :key="incidencia.id">
               <th>{{ incidencia.id }}</th>
+              <th>{{ incidencia.unidad }}</th>
               <td>{{ formatDate(incidencia.fechaInicio) }}</td>
               <td>{{ formatDate(incidencia.comunicaEmpresa) }}</td>
               <td>{{ incidencia.estado }}</td>
@@ -111,10 +140,20 @@ export default {
               <td>{{ incidencia.descripcion }}</td>
               <td>{{ incidencia.infoAdicio_grabador }}</td>
               <td>
-                <button type="button" class="btn btn-info" @click="togglePopUp(incidencia)">Consultar</button>
+                <button type="button" class="btn btn-info btn-sm" @click="togglePopUp(incidencia)">Consultar</button>
               </td>   
               <td>
-                <button type="button" class="btn btn-warning btn-sm" @click="editarIncidencia(incidencia)">Enviar a SABAS/Editar</button>
+              <!-- Botón editar -->
+               <router-link
+                class="btn btn-success"
+                :to="{ name: 'EditaincidenSabas', params: { incidencia: JSON.stringify(incidencia) } }"
+                   >
+                  Editar
+                </router-link>
+ 
+              </td>
+              <td>
+                <button type="button" class="btn btn-warning btn-sm" @click="borrarIncidenciaSabas(incidencia)">Eliminar</button>
               </td>
  <!--/////////////////////////// Contenido de la ventana emergente ///////////////////////////-->
               <transition name="fade">
@@ -209,5 +248,4 @@ export default {
 }
 
 </style>
-
 

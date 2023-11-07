@@ -15,6 +15,8 @@ import pdfFonts from 'pdfmake/build/vfs_fonts';
 import 'datatables.net-responsive-bs5';
 import JsZip from 'jszip';
 import Navbar from "@/components/Navbar.vue";
+import moment from 'moment'; 
+
 window.JsZip = JsZip;
 DataTable.use(DataTableLib);
 DataTable.use(pdfmake);
@@ -31,16 +33,15 @@ export default {
         {
           data: null,
           render: function (data, type, row, meta) {
-            return `<button class="btn btn-success" @click="editarIncidencia(${row.id})">Editar${row.id}</button>
-                  <button class="btn btn-primary" @click="editarIncidencia(${row.id})">Consultar</button>
-                  <button class="btn btn-danger" @click="editarIncidencia(${row.id})">Eliminar</button>`
+            return ``
           }
         },
         { data: 'id' },
-        { data: 'fechaInicio' },
+        { data: 'comunicaEmpresa', render: this.formatDate },
+        { data: 'fechaInicio', render: this.formatDate },
+        { data: 'fechaFin', render: this.formatDate },
         { data: 'numDias' },
-        { data: 'estado' },
-        { data: 'comunicaEmpresa' },
+        { data: 'estado' },        
         { data: 'categoria' },
         { data: 'descripcion' },
         { data: 'infoAdicio_grabador' },
@@ -60,7 +61,14 @@ export default {
     editarIncidencia(id) {
       debugger;
       console.log(`Editar incidencia con ID: ${id}`);
+    },
+    formatDate(date) {
+      if (date) {
+      return moment(date).format("YYYY-MM-DD"); // Formatea la fecha si no es null
+    } else {
+      return "No finalizada"; // Muestra "No finalizada" si la fecha es null
     }
+    },
   },
 }
 
@@ -84,12 +92,14 @@ export default {
         }">
           <thead>
             <tr>
-              <th>Gestión</th>
+              <th></th>
               <th>Número</th>
+              <th>Conocimiento Empresa</th>
               <th>Fecha de inicio</th>
+              <th>Fecha de fin</th>
               <th>Días</th>
               <th>Estado</th>
-              <th>Conocimiento Empresa</th>
+              
               <th>Categoria</th>
               <th>Descripción</th>
               <th>Actualizaciones</th>
@@ -101,18 +111,7 @@ export default {
       </div>
     </div>
   </div>
-  <!-- <h6 v-for="item of incidencias">{{ item }}</h6> -->
-  <!-- <p class="mb-0"><strong>Id: </strong>{{ incidencia.id }}</p>
-          <p class="mb-0"><strong>Zona: </strong>{{ incidencia.zona }}</p>  
-          <p class="mb-0"><strong>Unidad: </strong>{{ incidencia.unidad }}</p>  
-          <p class="mb-0"><strong>Fecha inicio: </strong>{{ incidencia.fechaInicio }}</p>  
-          <p class="mb-0"><strong>Fecha fin: </strong>{{ incidencia.fechaFin }}</p> 
-          <p class="mb-0"><strong>Duración en días: </strong>{{ incidencia.numDias }}</p>   
-          <p class="mb-0"><strong>Estado: </strong>{{ incidencia.estado }}</p>         						
-          <p class="mb-0"><strong>Fecha de comunicación a empresa responsable: </strong>{{ incidencia.comunicaEmpresa}}</p>
-          <p class="mb-0"><strong>Información adicional añadida por el grabador: </strong>{{ incidencia.infoAdicio_grabador }}</p>  
-          <p class="mb-0"><strong>Descripción: </strong>{{ incidencia.descripcion }}</p>         						
-          <p class="mb-0"><strong>Categoria: </strong>{{ incidencia.categoria }}</p>          -->
+
 </template>
 <style>
 .ancho {

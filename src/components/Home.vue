@@ -47,7 +47,7 @@ export default {
         <div class="card">
           <div class="card-body text-center">
             <div class="mb-4">
-              <img src="loginIcon.webp" alt="Imagen de login" class="rounded-circle">
+              <!-- <img src="loginIcon.webp" alt="Imagen de login" class="rounded-circle"> -->
             </div>
             <h2 class="mb-4">Iniciar sesión</h2>
             <form @submit.prevent="iniciarSesion">
@@ -74,6 +74,7 @@ export default {
 .container {
   text-align: center;
   padding-top: 20px;
+ 
 }
 
 .card {

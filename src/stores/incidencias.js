@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import {
   getIncidencias,
-  guardarIncidencia, getEstadisticasPorParametroApi
+  guardarIncidencia, getEstadisticasPorParametroApi, borrarIncidencia,
 } from './api-service';
 import { loginStore } from "@/stores/loginStore";
 
@@ -69,11 +69,40 @@ export const incidenciasStore = defineStore("incidencias", {
         });
     },
 
+    eliminarIncidencia(incidencia) {
+      return borrarIncidencia(incidencia).then(() => {
+      // Busca el índice de la incidencia en la lista local
+      const index = this.incidencias.findIndex((inc) => inc.id === incidencia.id);
+
+      // Si se encuentra la incidencia, elimínala de la lista local
+      if (index !== -1) {
+        this.incidencias.splice(index, 1);
+      } else {
+        console.warn('Incidencia no encontrada en la lista local.');
+      }
+
+      // Emitir un evento para notificar al componente padre que se eliminó la incidencia
+      this.$emit('incidencia-eliminada', incidencia.id);
+
+      // Retorna un indicador de éxito o cualquier otro valor necesario
+      return true;
+    })
+    .catch((error) => {
+      console.error('Error al eliminar la incidencia:', error);
+      // Maneja el error adecuadamente aquí
+      return false;
+    });
+
+    },
+
     async getEstadisticasPorParametro(estadoValor, fechaInicioValor, fechaFinValor) {
       getEstadisticasPorParametroApi(estadoValor, fechaInicioValor, fechaFinValor)
         .then((response) => {
           console.log("incidencias....................................." + response.data)
+        //  console.log(this.numIncidencias)
+
           this.numIncidencias = response.data;
+        //  console.log("incidencias despues de getEstadisticas " + this.numIncidencias)
         })
         .catch((error) => {
           console.error("Error al obtener estadísticas: ", error);

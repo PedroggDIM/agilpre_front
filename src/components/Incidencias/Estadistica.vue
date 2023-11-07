@@ -42,8 +42,8 @@ export default {
       console.log(fechaInicioStr)
       console.log(fechaFinStr)
       await this.getEstadisticasPorParametro(this.estado, fechaInicioStr, fechaFinStr);
-      console.log(this.numIncidencias)
-      console.log("Incidencias:" + this.numIncidencias);
+      // console.log(this.numIncidencias)
+      // console.log("Incidencias:" + this.numIncidencias);
     },
   },
 }
