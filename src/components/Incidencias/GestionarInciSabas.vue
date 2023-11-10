@@ -70,8 +70,12 @@ export default {
   closePopUp(incidencia) {
     incidencia.showPopup = false;
   },
-    formatDate(date) {
-      return moment(date).format("YYYY/MM/DD");
+  formatDate(date) {
+      if (date) {
+      return moment(date).format("YYYY-MM-DD"); // Formatea la fecha si no es null
+    } else {
+      return "No finalizada"; // Muestra "No finalizada" si la fecha es null
+    }
     },
 
     borrarIncidenciaSabas(incidencia) { 
@@ -104,7 +108,7 @@ export default {
   <div>
     <Navbar />
   </div>
-  <!-- <EditaincidenSabas :incidencia="incidencia" /> -->
+
   <div class="container-fluid ancho">
     <div>
       <h5>Buscar por Estado</h5>
@@ -114,18 +118,18 @@ export default {
           <option v-for="estado in estados" :key="estado" :value="estado">{{ estado }}</option>
         </select>
         <!-- Define la tabla y su cabecera dentro del mismo contenedor -->
-        <table class="table table-sm">
-          <thead>
+        <table class="table table-hover table-sm">
+          <thead class="table-light">
             <tr>
-              <th scope="col">Número</th>
+              <th scope="col">Núm:</th>
               <th scope="col">Unidad</th>
               <th scope="col">Inicio</th>
               <th scope="col">Comunica</th>
               <th scope="col">Estado</th>
-              <th scope="col">Tipo de incidencia</th>
-              <th scope="col">Descripción:</th>
-              <th scope="col">Informa. adicional:</th>
-              <th scope="col">Acciones:</th>
+              <th scope="col">Tipo </th>
+              <th scope="col">Descripción</th>
+              <th scope="col">Info. adicional</th>
+              <th scope="col">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -135,7 +139,13 @@ export default {
               <th>{{ incidencia.unidad }}</th>
               <td>{{ formatDate(incidencia.fechaInicio) }}</td>
               <td>{{ formatDate(incidencia.comunicaEmpresa) }}</td>
-              <td>{{ incidencia.estado }}</td>
+              <td :class="{
+                'estado-rojo': incidencia.estado === 'Pendiente de tratar en la reunión mensual',
+                'estado-azul': incidencia.estado === 'Enviada al SABAS'
+              }">
+                {{ incidencia.estado }}
+              </td>
+
               <td>{{ incidencia.categoria }}</td>                
               <td>{{ incidencia.descripcion }}</td>
               <td>{{ incidencia.infoAdicio_grabador }}</td>
@@ -165,7 +175,7 @@ export default {
                     <p class="mb-0"><strong>Fecha inicio incidencia: </strong>{{ formatDate(incidencia.fechaInicio) }}</p>
                     <p class="mb-0"><strong>Fecha de comunicación a la empresa responsable: </strong>{{
                       formatDate(incidencia.comunicaEmpresa) }}</p>
-                    <p class="mb-0"><strong>Fecha resolución: </strong>{{ formatDate(incidencia.fechaFin) }}</p>
+                    <p class="mb-0"><strong>Fecha fin: </strong>{{ formatDate(incidencia.fechaFin) }}</p>
                     <p class="mb-0"><strong>Duración en días: </strong>{{ incidencia.numDias }}</p>
                     <p class="mb-0"><strong>Estado: </strong>{{ incidencia.estado }}</p>                     
                     <p class="mb-0"><strong>Categoria: </strong>{{ incidencia.categoria }}</p>            
@@ -236,7 +246,7 @@ export default {
   justify-content: center;
   align-items: center;
   font-size: 18px; 
-  line-height: 2.5; 
+  line-height: 2; 
 }
 
 .pop-up-inner {
@@ -247,5 +257,21 @@ export default {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
+.estado-rojo {
+  color: #FE2E64 !important;
+  display: inline-block; 
+  padding: 5px 10px;
+  border-radius: 50px;
+  margin: 5px;
+  
+}
+
+.estado-azul {
+  color: blue !important;
+  display: inline-block;  
+  padding: 5px 10px;
+  border-radius: 50px;
+  margin: 5px;
+}
 </style>
 

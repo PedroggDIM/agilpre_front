@@ -96,21 +96,21 @@ export default {
       debugger;
       console.log(JSON.stringify(incidencia))
       console.log(incidencia);
-      //    if (this.validarFormulario()) {   //       
-      this.guardarIncidenciaStore(incidencia)
-      //Mensaje de confirmación del envío de la incidencia
-      this.mensajeConfirmaGuardado()
-      //Limpieza de los campos tras el envío de la incidencia       
-      this.limpiarIncidencia();
-      //   }
+      if (this.validarFormulario()) {   //       
+        this.guardarIncidenciaStore(incidencia)
+        //Mensaje de confirmación del envío de la incidencia
+        this.mensajeConfirmaGuardado()
+        //Limpieza de los campos tras el envío de la incidencia       
+        this.limpiarIncidencia();
+      }
     },
-    mensajeConfirmaGuardado() {      
+    mensajeConfirmaGuardado() {
       ventanaMensaje.innerHTML = "";
-      document.getElementById("ventanaMensaje").style.display = "block";      
-      let texto = "Su incidencia ha sido editada y guardada en el sistema";      
+      document.getElementById("ventanaMensaje").style.display = "block";
+      let texto = "Su incidencia ha sido editada y guardada en el sistema";
       let mens = (document.textContent = texto);
       let elementoHtml = document.getElementById("ventanaMensaje");
-      elementoHtml.append(mens);      
+      elementoHtml.append(mens);
       setTimeout(function () {
         document.getElementById("ventanaMensaje").style.display = "none";
       }, 7000);
@@ -144,24 +144,22 @@ export default {
       this.incidencia.disponible = '';
       this.incidencia.categoria = ''
       this.incidencia.demarcacion = ''
-      //   document.getElementById("form").reset(); 
     },
     validarFormulario() {
       this.mensajeError = [];
       let valid = true;
-      if (this.incidencia.zona == null || this.incidencia.zona.trim() === '') {
-        valid = false;
-        this.mensajeError.push('Inserte la zona del usuario.');
-      }
-      if (this.incidencia.unidad == null || this.incidencia.unidad.trim() === '') {
-        valid = false;
-        this.mensajeError.push('Inserte la unidad del usuario.');
-      }
       if (this.incidencia.fechaInicio == null || this.incidencia.fechaInicio.trim() === '') {
         valid = false;
         this.mensajeError.push('Inserte la fecha de inicio de la incidencia.');
-      }
-      if (this.incidencia.estado == null || this.incidencia.estado.trim() === '') {
+      } else if (this.incidencia.fechaFin != null && this.incidencia.fechaFin.trim() !== '') {
+        const fechaInicio = new Date(this.incidencia.fechaInicio);
+        const fechaFin = new Date(this.incidencia.fechaFin);
+
+        if (fechaFin < fechaInicio) {
+          valid = false;
+          this.mensajeError.push('La fecha de finalización no puede ser anterior a la fecha de inicio.');
+        }
+      } if (this.incidencia.estado == null || this.incidencia.estado.trim() === '') {
         valid = false;
         this.mensajeError.push('Inserte el estado de la incidencia.');
       }
@@ -203,10 +201,6 @@ export default {
         valid = false;
         this.mensajeError.push('Debe describir brevemente la incidencia en el apartado "Descripción".');
       }
-      if (this.incidencia.demarcacion == null || this.incidencia.demarcacion.trim() === '') {
-        valid = false;
-        this.mensajeError.push('Debe añadir la demarcación a la que se enviará el correo electrónico.');
-      }
       return valid;
     },
   },
@@ -223,7 +217,7 @@ export default {
   <div>
     <Navbar />
   </div>
-  <p>Incidencia enviará: {{ incidencia }}</p> 
+  <!-- <p>Incidencia enviará: {{ incidencia }}</p> -->
   <!-- Para el envio del @ uso de api formsubmit -->
   <!-- <form action="https://formsubmit.co/pedrogilgil447@gmail.com" method="POST" target="_blank" id="form"> -->
   <!-- Para el envío del @ uso la api Formspree -->
@@ -234,12 +228,21 @@ export default {
       <div class="col">
 
         <div class="row">
-          <div class="col-12 col-md-8 mb-3">
+          <div class="col-12 col-md-9 mb-3">
             <!-- Componente InputincidenciaGrabador -->
             <InputincidenciaGrabador @editarIncidencia="manejarEdicionIncidencia" />
+
+            <!-- Mensaje de error campos validación formulario -->
+            <div class="mensajeError">
+              <p v-if="mensajeError.length != 0" class="error">Revise los siguientes errores, si desea que se envíe el
+                formulario:</p>
+              <p class="error" v-for="error in mensajeError">{{ error }}</p>
+            </div>
+
+
           </div>
 
-          <div class="col-12 col-md-4 mb-3" id="edi">
+          <div class="col-12 col-md-3 mb-3" id="edi">
             <p class="margeninput">Estado</p>
             <select name="estado" class="form-select" v-model="incidencia.estado">
               <option value="Comunicada a la empresa">Comunicada a la empresa</option>

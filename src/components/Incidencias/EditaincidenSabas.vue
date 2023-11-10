@@ -647,9 +647,9 @@ export default {
             GUARDAR
           </button>
           <input type="button" @click="limpiarIncidencia()" value="Limpiar formulario"
-            style="background-color: rgb(0, 153, 255);">
+            style="background-color: rgb(0, 153, 255);">&nbsp; 
 
-              <router-link class="btn btn-success"
+            <router-link class="btn btn-info"
               to="/GestionarInciSabas"
               :class="{ 'text-warning': $route.name === 'GestionarInciSabas' }"
             >Volver</router-link>    

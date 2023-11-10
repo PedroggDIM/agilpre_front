@@ -93,7 +93,7 @@ export default {
 
             <div>
               <h3>Estadísticas de Incidencias</h3>
-              <p>Número de incidencias: {{ this.numIncidencias }}</p>
+              <p>Número de incidencias: {{ numIncidencias }}</p>
             </div>
 
           </div>

@@ -7,12 +7,19 @@ import Calendar from "primevue/calendar";
 import { mapState, mapActions } from 'pinia';
 import { incidenciasStore } from '@/stores/incidencias.js';
 import { loginStore } from "@/stores/loginStore";
+import { getDemarcaciones } from "@/stores/api-service";
 
 export default {
   props: {
   },
   components: {
     Calendar,
+  },
+  mounted() {
+    this.obtenerReceptores().then(() => {
+      this.incidencia.demarcacion = this.receptores[0].correo;
+
+  });
   },
   emits: ["guardarIncidencia"],
   data() {
@@ -50,6 +57,8 @@ export default {
         demarcacion: '',
         _links: ''
       },
+      demarcaciones: [],
+      selectedCorreo: '',
       mensajeError: [],
       $form: null,
     };
@@ -58,7 +67,21 @@ export default {
     ...mapState(incidenciasStore, ['incidencias'], loginStore, ["perfil", "correo"]),
   },
   methods: {
-    ...mapActions(incidenciasStore, ['getIncidencias', 'guardarIncidenciaStore']),
+    ...mapActions(incidenciasStore, ['getIncidencias', 'guardarIncidenciaStore', 'getDemarcaciones']),
+
+    obtenerReceptores() {
+    return new Promise((resolve, reject) => {
+      getDemarcaciones()
+        .then((response) => {
+          this.receptores = response.data._embedded.receptorModels;
+          resolve(); // Resuelve la Promesa una vez que los datos están disponibles
+        })
+        .catch((error) => {
+          console.error('Error al obtener receptores:', error);
+          reject(error);
+        });
+    });
+  },
 
     guardarIncidencia(incidencia) {
       debugger;
@@ -82,7 +105,7 @@ export default {
       elementoHtml.append(mens);      
       setTimeout(function () {
         document.getElementById("ventanaMensaje").style.display = "none";
-      }, 10000);
+      }, 7000);
     },
     calcularDiferenciaDias() {
       if (this.incidencia.fechaInicio && this.incidencia.fechaFin) {
@@ -107,7 +130,7 @@ export default {
       this.incidencia.fechaFin = '';
       this.incidencia.numDias = '';
       this.incidencia.estado = '';
-      this.incidencia.comunicaEmpresa = '';
+    //  this.incidencia.comunicaEmpresa = '';
       this.incidencia.infoAdicio_grabador = '';
       this.incidencia.descripcion = '';
       this.incidencia.disponible = '';
@@ -130,6 +153,7 @@ export default {
         valid = false;
         this.mensajeError.push('Inserte la fecha de inicio de la incidencia.');
       }
+     
       if (this.incidencia.estado == null || this.incidencia.estado.trim() === '') {
         valid = false;
         this.mensajeError.push('Inserte el estado de la incidencia.');
@@ -185,6 +209,21 @@ export default {
     this.incidencia.unidad = dataSesion.unidad;
     this.incidencia.zona = dataSesion.zona;
     this.getIncidencias();
+    // fecha de comunicación a empresa responsable es fecha actual
+    // obtengo la fecha actual en el formato deseado (yyyy-MM-dd)
+      const fechaActual = new Date().toISOString().slice(0, 10);
+      // Asigna la fecha actual al modelo de datos
+      this.incidencia.comunicaEmpresa = fechaActual;
+     
+    // Llamada a la API para obtener las demarcaciones
+       getDemarcaciones()
+      .then((response) => {
+        this.demarcaciones = response.data; // Asigna los datos de la API a la variable demarcaciones
+        console.log(this.demarcaciones); 
+      })
+      .catch((error) => {
+        console.error("Error al obtener las demarcaciones: " + error);
+      });
   }
 };
 </script>
@@ -192,11 +231,11 @@ export default {
   <div>
     <Navbar />
   </div>
-  <p>Incidencia enviará: {{ incidencia }}</p>
+  <!-- <p>Incidencia enviará: {{ incidencia }}</p> -->
   <!-- Para el envio del @ uso de api formsubmit -->
   <form action="https://formsubmit.co/pedrogilgil447@gmail.com" method="POST" target="_blank" id="form">
     <!-- Para el envío del @ uso la api Formspree -->
-    <!-- <form id="form" class="form" action="https://formspree.io/f/meqbvewr" method="POST" target="_blank" id="form"> -->
+    <!-- <form id="form" class="form" action="https://formspree.io/f/meqbvewr" method="POST" target="_blank"> -->
     <div class="container-fluid ancho">
       <h3 class="titulo">Formulario de grabación de incidencias</h3>
       <div class="row mt-3">
@@ -246,7 +285,7 @@ export default {
             </div>
             <div class="col-12 col-md-4 mb-3">
               <p class="margeninput">Fecha de comunicación por correo a la empresa responsable</p>
-              <input type="date" v-model.trim="incidencia.comunicaEmpresa" dateFormat="dd/MM/yy" required />
+              <input type="date" v-model.trim="incidencia.comunicaEmpresa" dateFormat="dd/MM/yy" :readonly="true" required />
             </div>
           </div>
           <div class="my-2">
@@ -256,7 +295,6 @@ export default {
                 <input type="radio" name="categoria" class="form-check-input" id="radio-1" v-model="incidencia.categoria"
                   value="DeficienciaServicio" required />
                 <!-- <label for="radio-1" class="form-check-label">Deficiencias o incumplimientos en la prestación del servicio</label> -->
-
                 <div class="form-check-label">
                   Deficiencias o incumplimientos en la prestación del servicio
                 </div>
@@ -628,28 +666,26 @@ export default {
           <p class="margeninput">Información adicional por parte del grabador</p>
           <textarea placeholder="Información adicional de la incidencia" class="form-control" cols="30" rows="5"
             v-model.trim="incidencia.infoAdicio_grabador" />
-
-          <div class="row">
-            <div class="col-4 mb-3">
-              <p class="margeninput">Seleccione la demarcación a la que pertenezca su Unidad</p>
-              <select class="form-select" v-model.trim="incidencia.demarcacion" required>
-                <option disabled selected>Seleccione una demarcación</option>
-                <option value="pedrogilgil447@gmail.com">Galicia, Asturias, Castilla y León, Castilla la Mancha,
-                  Extremadura y Madrid</option>
-                <option value="pedrogilgil447@gmail.com">Cantabria, País Vasco, Navarra, La Rioja, Aragón, Cataluña,
-                  Baleares</option>
-                <option value="pedrogilgil447@gmail.com">Valencia y Murcia, Andalucía, Ceuta, Melilla, Canarias</option>
-              </select>
-            </div>
+        
+            <!-- Correo electrónico -->
+          <div>
+            <p class="margeninput">Seleccione demarcación (envío del correo electrónico @)</p>
+            <select v-model.trim="incidencia.demarcacion" required>
+              <option value="" disabled>Seleccione una demarcación</option>
+              <option v-for="receptor in receptores" :value="receptor.correo">{{ receptor.zona }}</option>
+            </select>            
           </div>
-
+          
+       
+          
+          <div class="text-center">
           <button class="btn btn-success" id="botonGuardar" @click="guardarIncidencia(incidencia)" type="submit"
             value="Enviar">
-            Enviar por correo a empresa responsable y GUARDAR
+            Enviar correo y GUARDAR
           </button>
           <input type="button" @click="limpiarIncidencia()" value="Limpiar formulario"
             style="background-color: rgb(0, 153, 255);">
-
+          </div>
           <!-- Mensaje de error campos validación formulario -->
           <div class="mensajeError">
             <p v-if="mensajeError.length != 0" class="error">Revise los siguientes errores, si desea que se envíe el
@@ -662,9 +698,7 @@ export default {
         </div>
       </div>
     </div>
-
     <input type="hidden" name="_captcha" value="false">
-
   </form>
 </template>
 

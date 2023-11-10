@@ -22,7 +22,7 @@ export default {
         <br><br>
         <h1 class="card_titulo">AGESIL</h1>
         <p class="card_descripcion">
-          Este es el texto que explica en que consiste la aplicación.
+          <h4>Aplicación para la Gestión de incidencias del Servicio de Limpieza en la Guardia Civil </h4>
         </p>
         <p></p>
         <router-link to="/nuevaIncidencia" class="btn-gen btn-bienvenida">Nueva Incidencia</router-link>
@@ -35,4 +35,7 @@ export default {
   background-color: #409eff;
   color: var(--color-color-TextoPrimario);
 }
+.card_descripcion {
+  font-family: 'Times New Roman', Times, serif;
+}               
 </style>

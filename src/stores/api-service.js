@@ -59,5 +59,7 @@ export function borrarIncidencia(incidencia) {
   
 }
 
-
+export function getDemarcaciones() {
+  return llamadaApi(`${host}/receptores`, 'get');
+}
 

@@ -48,7 +48,11 @@ export default {
       </div>
 
       <div class="collapse navbar-collapse" id="navbarNav">
-     
+        
+       <div class="nav-link-content">
+          <img src="../assets/guardia_civil.png" alt="Guardia Civil" class="icon" />        
+       </div>
+            
         <router-link class="nav-link"
         to="/NuevaIncidencia"
         :class="{ 'text-warning': $route.name === 'NuevaIncidencia' }"
@@ -57,7 +61,7 @@ export default {
       <router-link v-if="dataSession && dataSession.perfil === 'Grabador'" class="nav-link"
         to="/GestionarIncidencias"
         :class="{ 'text-warning': $route.name === 'GestionarIncidencias' }"
-      >Gestionar Incidencias Grabador</router-link>
+       >Gestionar Incidencias</router-link> <!--Grabador -->
 
       <router-link v-if="dataSession && dataSession.perfil === 'Administrador'" class="nav-link"
         to="/GestionarInciSabas"
@@ -67,7 +71,7 @@ export default {
       <router-link v-if="dataSession && dataSession.perfil === 'Administrador'" class="nav-link"
         to="/ReportesSabas"
         :class="{ 'text-warning': $route.name === 'ReportesSabas' }"
-      >Reportes</router-link>
+      >Informes</router-link>
       
       <router-link v-if="dataSession && dataSession.perfil === 'Administrador'" class="nav-link"
         to="/Estadistica"
@@ -207,5 +211,13 @@ export default {
     margin-right: 0;
     margin-top: 1rem;
   }
+}
+.nav-link-content {
+  display: flex;
+  align-items: center;
+}
+.icon {
+  width: 400px;
+  height: 48px;
 }
 </style>

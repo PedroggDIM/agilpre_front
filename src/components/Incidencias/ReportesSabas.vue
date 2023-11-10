@@ -78,7 +78,8 @@ export default {
   <div>
     <Navbar />
   </div>
-  <h5>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp Gestión y reportes de incidencias</h5>
+  <h3 class="titulo">&nbsp&nbsp&nbsp&nbsp&nbsp&nbspInformes</h3>
+  <!-- <h5>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp Gestión y reportes de incidencias</h5> -->
   <div class="row">
     <div class="ancho">
       <div class="table-responsive">

@@ -47,7 +47,7 @@ export default {
         <div class="card">
           <div class="card-body text-center">
             <div class="mb-4">
-              <!-- <img src="loginIcon.webp" alt="Imagen de login" class="rounded-circle"> -->
+              <img src="LogoAgesil.png" alt="Imagen de login" >
             </div>
             <h2 class="mb-4">Iniciar sesión</h2>
             <form @submit.prevent="iniciarSesion">
@@ -73,16 +73,16 @@ export default {
 <style>
 .container {
   text-align: center;
-  padding-top: 20px;
- 
+  padding-top: 20px; 
 }
 
 .card {
-  margin-top: 20px;
+  margin-top: 180px;
 }
 
 .card-body {
   text-align: center;
+  background-color: #D8D8D8
 }
 
 .card img {
