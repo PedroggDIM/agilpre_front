@@ -47,7 +47,7 @@ export default {
         <div class="card">
           <div class="card-body text-center">
             <div class="mb-4">
-              <img src="LogoAgesil.png" alt="Imagen de login" >
+              <!-- <img src="LogoAgesil.png" alt="Imagen de login" > -->
             </div>
             <h2 class="mb-4">Iniciar sesión</h2>
             <form @submit.prevent="iniciarSesion">

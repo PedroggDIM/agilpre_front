@@ -31,7 +31,7 @@ export default {
       <div class="d-flex justify-content-start align-items-center">
         <div class="navbar-brand">
           <a href="#">
-            <img src="/LogoAgesil.png" alt="Logo" />
+            <!-- <img src="/LogoAgesil.png" alt="Logo" /> -->
           </a>
         </div>
         <button
