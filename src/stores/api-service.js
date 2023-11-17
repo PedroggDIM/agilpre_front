@@ -3,7 +3,7 @@ import axios from "axios";
 // const host = "http://localhost:8080/api";
  const host = "https://agilpreapi-tgin2ryd.b4a.run/api";
 
-export function cambiarHttpPorHttps(enlace) {
+ export function cambiarHttpPorHttps(enlace) {
   return enlace.replace("http", "https");
 }
 export function llamadaApi(path, method, body) {

@@ -80,10 +80,8 @@ export const incidenciasStore = defineStore("incidencias", {
       } else {
         console.warn('Incidencia no encontrada en la lista local.');
       }
-
-      // Emitir un evento para notificar al componente padre que se eliminó la incidencia
+      // Emite un evento para notificar al componente padre que se eliminó la incidencia
       this.$emit('incidencia-eliminada', incidencia.id);
-
       // Retorna un indicador de éxito o cualquier otro valor necesario
       return true;
     })
@@ -92,17 +90,12 @@ export const incidenciasStore = defineStore("incidencias", {
       // Maneja el error adecuadamente aquí
       return false;
     });
-
     },
-
     async getEstadisticasPorParametro(estadoValor, fechaInicioValor, fechaFinValor) {
       getEstadisticasPorParametroApi(estadoValor, fechaInicioValor, fechaFinValor)
         .then((response) => {
-          console.log("incidencias....................................." + response.data)
-        //  console.log(this.numIncidencias)
-
-          this.numIncidencias = response.data;
-        //  console.log("incidencias despues de getEstadisticas " + this.numIncidencias)
+          console.log("incidencias....................................." + response.data)       
+          this.numIncidencias = response.data.numIncidencias;       
         })
         .catch((error) => {
           console.error("Error al obtener estadísticas: ", error);

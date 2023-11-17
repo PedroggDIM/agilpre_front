@@ -5,11 +5,11 @@ import { loginStore } from "@/stores/loginStore"
 export default {
   data() {
     return {
-      dataSession: null,
+      dataSession: null,  
     }
   },
   computed: {
-    ...mapState(loginStore, ["perfil","correo"]),
+    ...mapState(loginStore, ["perfil", "correo"]),
   },
   methods: {
     ...mapActions(loginStore, ["cerrarSesion", "recuperarSesion"]),
@@ -34,61 +34,40 @@ export default {
             <!-- <img src="/LogoAgesil.png" alt="Logo" /> -->
           </a>
         </div>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
       </div>
 
       <div class="collapse navbar-collapse" id="navbarNav">
-        
-       <div class="nav-link-content">
-          <img src="../assets/guardia_civil.png" alt="Guardia Civil" class="icon" />        
-       </div>
-            
-        <router-link class="nav-link"
-        to="/NuevaIncidencia"
-        :class="{ 'text-warning': $route.name === 'NuevaIncidencia' }"
-      >Crear Incidencia</router-link>
-      
-      <router-link v-if="dataSession && dataSession.perfil === 'Grabador'" class="nav-link"
-        to="/GestionarIncidencias"
-        :class="{ 'text-warning': $route.name === 'GestionarIncidencias' }"
-       >Gestionar Incidencias</router-link> <!--Grabador -->
 
-      <router-link v-if="dataSession && dataSession.perfil === 'Administrador'" class="nav-link"
-        to="/GestionarInciSabas"
-        :class="{ 'text-warning': $route.name === 'GestionarInciSabas' }"
-      >Gestionar Incidencias SABAS</router-link>
-      
-      <router-link v-if="dataSession && dataSession.perfil === 'Administrador'" class="nav-link"
-        to="/ReportesSabas"
-        :class="{ 'text-warning': $route.name === 'ReportesSabas' }"
-      >Informes</router-link>
-      
-      <router-link v-if="dataSession && dataSession.perfil === 'Administrador'" class="nav-link"
-        to="/Estadistica"
-        :class="{ 'text-warning': $route.name === 'Estadistica' }"
-      >Estadísticas</router-link>
+        <div class="nav-link-content">
+          <img src="../assets/guardia_civil.png" alt="Guardia Civil" class="icon" />
+        </div>
+
+        <router-link class="nav-link" to="/NuevaIncidencia"
+          :class="{ 'text-warning': $route.name === 'NuevaIncidencia' }">Crear Incidencia</router-link>
+
+        <router-link v-if="dataSession && dataSession.perfil === 'Grabador'" class="nav-link" to="/GestionarIncidencias"
+          :class="{ 'text-warning': $route.name === 'GestionarIncidencias' }">Gestionar Incidencias</router-link>
+        <!--Grabador -->
+
+        <router-link v-if="dataSession && dataSession.perfil === 'Administrador'" class="nav-link"
+          to="/GestionarInciSabas" :class="{ 'text-warning': $route.name === 'GestionarInciSabas' }">Gestionar Incidencias
+          SABAS</router-link>
+
+        <router-link v-if="dataSession && dataSession.perfil === 'Administrador'" class="nav-link" to="/ReportesSabas"
+          :class="{ 'text-warning': $route.name === 'ReportesSabas' }">Informes</router-link>
+
+        <router-link v-if="dataSession && dataSession.perfil === 'Administrador'" class="nav-link" to="/Estadistica"
+          :class="{ 'text-warning': $route.name === 'Estadistica' }">Estadísticas</router-link>
 
         <ul class="navbar-nav ms-auto">
           <!-- Desplegable de usuario -->
           <li v-if="perfil !== ''" class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              id="usuarioDropdown"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
+            <a class="nav-link dropdown-toggle" href="#" id="usuarioDropdown" role="button" data-bs-toggle="dropdown"
+              aria-expanded="false">
               <i class="fas fa-user"></i> <!-- Icono de usuario -->
             </a>
             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-end" aria-labelledby="usuarioDropdown">
@@ -98,7 +77,7 @@ export default {
               <li class="dropdown-item">
                 {{ rol }}
               </li>
-              <li class="dropdown-divider" v-if="dataSession">{{dataSession.correo}}</li>
+              <li class="dropdown-divider" v-if="dataSession">{{ dataSession.correo }}</li>
               <li class="dropdown-item">
                 <button class="btn btn-link" @click="cerrarSesionNav()">Cerrar Sesión</button>
               </li>
@@ -113,7 +92,8 @@ export default {
 <style scoped>
 .navbar {
   background: #007d5c !important;
-  color: white; /* Letras blancas */
+  color: white;
+  /* Letras blancas */
   height: auto;
   display: flex;
   justify-content: space-between;
@@ -124,7 +104,8 @@ export default {
   left: 0;
   width: 100%;
   z-index: 999;
-  font-size: 22px; /* Tamaño de fuente aumentado */
+  font-size: 22px;
+  /* Tamaño de fuente aumentado */
 }
 
 .navbar-brand {
@@ -212,12 +193,14 @@ export default {
     margin-top: 1rem;
   }
 }
+
 .nav-link-content {
   display: flex;
   align-items: center;
 }
+
 .icon {
   width: 400px;
-  height: 48px;
+  height: 45px;
 }
 </style>

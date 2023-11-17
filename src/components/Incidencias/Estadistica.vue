@@ -42,8 +42,6 @@ export default {
       console.log(fechaInicioStr)
       console.log(fechaFinStr)
       await this.getEstadisticasPorParametro(this.estado, fechaInicioStr, fechaFinStr);
-      // console.log(this.numIncidencias)
-      // console.log("Incidencias:" + this.numIncidencias);
     },
   },
 }
@@ -53,8 +51,9 @@ export default {
     <Navbar />
   </div>
   <div>
+    <h3 class="letra">Estadísticas de Incidencias</h3>
     <div class="container"><br>
-      <h3>Incidencias entre dos fechas</h3><br>
+      <h3 class="letra">Incidencias entre dos fechas</h3><br>
       <div class="row">
         <div class="col-md-6">
           <div class="p-field">
@@ -90,12 +89,11 @@ export default {
             <button @click="obtenerEstadisticas" class="p-button p-component">
               Obtener incidencias
             </button>
-
             <div>
-              <h3>Estadísticas de Incidencias</h3>
-              <p>Número de incidencias: {{ numIncidencias }}</p>
+              <p class="letra">
+              <h5>Número de incidencias: {{ numIncidencias }}</h5>
+              </p>
             </div>
-
           </div>
         </div>
       </div>
@@ -103,18 +101,20 @@ export default {
   </div>
 </template>
 
-
 <style>
 .container {
   width: 95%;
-  margin: 2em auto 0 auto; /* 2em de margen arriba, centrado horizontalmente */
-  /* Centra horizontalmente el contenido */
+  margin: 2em auto 0 auto;
   background-color: #E6E6E6;
-  /* Color de fondo gris claro */
   padding: 20px;
-  /* Espacio interno para separar el contenido del borde */
   border: 4px;
   border-radius: 10px;
+}
+
+.letra {
+  font-family: 'Times New Roman';
+  margin-left: 20px;
+  margin-top: 20px;
 }
 </style>
 

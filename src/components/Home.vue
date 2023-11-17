@@ -5,7 +5,7 @@ export default {
   data() {
     return {
       usuario: {
-        nombre: "",
+        nombre: "", 
         clave: "",
       },
       errorInicioSesion: false,
@@ -13,8 +13,7 @@ export default {
   },
   methods: {
     iniciarSesion() {
-      //this.$router.push("/bienvenida");
-      // Esperar a que loginstore se comunique con la api y guardar respuesta
+      // Espera a que loginstore se comunique con la api y guarda respuesta
       loginStore().iniciarSesion(this.usuario.nombre, this.usuario.clave).then(
         (res) => {
           debugger;
@@ -49,7 +48,7 @@ export default {
             <div class="mb-4">
               <!-- <img src="LogoAgesil.png" alt="Imagen de login" > -->
             </div>
-            <h2 class="mb-4">Iniciar sesión</h2>
+            <h2 class="mb-4" id="texto">Iniciar sesión</h2>
             <form @submit.prevent="iniciarSesion">
               <div class="mb-3">
                 <input type="text" class="form-control" placeholder="Usuario" v-model="usuario.nombre">
@@ -73,7 +72,7 @@ export default {
 <style>
 .container {
   text-align: center;
-  padding-top: 20px; 
+  padding-top: 20px;
 }
 
 .card {
@@ -105,5 +104,9 @@ export default {
 
 .text-danger {
   margin-top: 10px;
+}
+
+#texto {
+  font-family: 'Times New Roman';
 }
 </style>

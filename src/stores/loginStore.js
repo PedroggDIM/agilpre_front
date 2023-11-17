@@ -23,27 +23,20 @@ export const loginStore = defineStore("login", {
       let body = {
         correo: nombreUsuario,
         contrasenia: claveUsuario
-      }; // cambiar por clave cuando en la base de datos se cifre la contraseña
-
+      }; 
       config.data = body,
         config.headers['Content-Type'] = 'application/json'
-
       return axios.request(config);
     },
-
-    establecerSesion(data){
-       // Se necesita una llamada a la API aqui.
+    establecerSesion(data){       
        this.correo = data.correo
        this.perfil = data.perfil;
        this.zona = data.zona;
        this.unidad = data.unidad;
-
     },
-
     recuperarSesion(){
       return {correo: this.correo, perfil: this.perfil, zona: this.zona, unidad: this.unidad};
     },
-
     cerrarSesion() {
       this.nombre = ""
       this.rol = ""

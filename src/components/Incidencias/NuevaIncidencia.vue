@@ -19,7 +19,7 @@ export default {
     this.obtenerReceptores().then(() => {
       this.incidencia.demarcacion = this.receptores[0].correo;
 
-  });
+    });
   },
   emits: ["guardarIncidencia"],
   data() {
@@ -70,18 +70,18 @@ export default {
     ...mapActions(incidenciasStore, ['getIncidencias', 'guardarIncidenciaStore', 'getDemarcaciones']),
 
     obtenerReceptores() {
-    return new Promise((resolve, reject) => {
-      getDemarcaciones()
-        .then((response) => {
-          this.receptores = response.data._embedded.receptorModels;
-          resolve(); // Resuelve la Promesa una vez que los datos están disponibles
-        })
-        .catch((error) => {
-          console.error('Error al obtener receptores:', error);
-          reject(error);
-        });
-    });
-  },
+      return new Promise((resolve, reject) => {
+        getDemarcaciones()
+          .then((response) => {
+            this.receptores = response.data._embedded.receptorModels;
+            resolve(); // Resuelve la Promesa una vez que los datos están disponibles
+          })
+          .catch((error) => {
+            console.error('Error al obtener receptores:', error);
+            reject(error);
+          });
+      });
+    },
 
     guardarIncidencia(incidencia) {
       debugger;
@@ -96,13 +96,13 @@ export default {
       }
 
     },
-    mensajeConfirmaGuardado() {      
+    mensajeConfirmaGuardado() {
       ventanaMensaje.innerHTML = "";
-      document.getElementById("ventanaMensaje").style.display = "block";      
-      let texto = "Su incidencia ha sido enviada por correo y Guardada en el sistema";      
+      document.getElementById("ventanaMensaje").style.display = "block";
+      let texto = "Su incidencia ha sido enviada por correo y Guardada en el sistema";
       let mens = (document.textContent = texto);
       let elementoHtml = document.getElementById("ventanaMensaje");
-      elementoHtml.append(mens);      
+      elementoHtml.append(mens);
       setTimeout(function () {
         document.getElementById("ventanaMensaje").style.display = "none";
       }, 7000);
@@ -130,7 +130,7 @@ export default {
       this.incidencia.fechaFin = '';
       this.incidencia.numDias = '';
       this.incidencia.estado = '';
-    //  this.incidencia.comunicaEmpresa = '';
+      //  this.incidencia.comunicaEmpresa = '';
       this.incidencia.infoAdicio_grabador = '';
       this.incidencia.descripcion = '';
       this.incidencia.disponible = '';
@@ -153,7 +153,7 @@ export default {
         valid = false;
         this.mensajeError.push('Inserte la fecha de inicio de la incidencia.');
       }
-     
+
       if (this.incidencia.estado == null || this.incidencia.estado.trim() === '') {
         valid = false;
         this.mensajeError.push('Inserte el estado de la incidencia.');
@@ -211,15 +211,15 @@ export default {
     this.getIncidencias();
     // fecha de comunicación a empresa responsable es fecha actual
     // obtengo la fecha actual en el formato deseado (yyyy-MM-dd)
-      const fechaActual = new Date().toISOString().slice(0, 10);
-      // Asigna la fecha actual al modelo de datos
-      this.incidencia.comunicaEmpresa = fechaActual;
-     
+    const fechaActual = new Date().toISOString().slice(0, 10);
+    // Asigna la fecha actual al modelo de datos
+    this.incidencia.comunicaEmpresa = fechaActual;
+
     // Llamada a la API para obtener las demarcaciones
-       getDemarcaciones()
+    getDemarcaciones()
       .then((response) => {
         this.demarcaciones = response.data; // Asigna los datos de la API a la variable demarcaciones
-        console.log(this.demarcaciones); 
+        console.log(this.demarcaciones);
       })
       .catch((error) => {
         console.error("Error al obtener las demarcaciones: " + error);
@@ -260,7 +260,8 @@ export default {
             </div>
             <div class="col-12 col-md-4 mb-3">
               <p class="margeninput">Fecha fin de la incidencia</p>
-              <input type="date" name="fechaFin" v-model="incidencia.fechaFin" @change="calcularDiferenciaDias" />
+              <input type="date" name="fechaFin" :min="incidencia.fechaInicio" v-model="incidencia.fechaFin"
+                @change="calcularDiferenciaDias" />
             </div>
             <div class="col-12 col-md-4 mb-3">
               <p class="margeninput">Número de días</p>
@@ -285,7 +286,8 @@ export default {
             </div>
             <div class="col-12 col-md-4 mb-3">
               <p class="margeninput">Fecha de comunicación por correo a la empresa responsable</p>
-              <input type="date" v-model.trim="incidencia.comunicaEmpresa" dateFormat="dd/MM/yy" :readonly="true" required />
+              <input type="date" v-model.trim="incidencia.comunicaEmpresa" dateFormat="dd/MM/yy" :readonly="true"
+                required />
             </div>
           </div>
           <div class="my-2">
@@ -666,25 +668,21 @@ export default {
           <p class="margeninput">Información adicional por parte del grabador</p>
           <textarea placeholder="Información adicional de la incidencia" class="form-control" cols="30" rows="5"
             v-model.trim="incidencia.infoAdicio_grabador" />
-        
-            <!-- Correo electrónico -->
+          <!-- Correo electrónico -->
           <div>
             <p class="margeninput">Seleccione demarcación (envío del correo electrónico @)</p>
             <select v-model.trim="incidencia.demarcacion" required>
               <option value="" disabled>Seleccione una demarcación</option>
               <option v-for="receptor in receptores" :value="receptor.correo">{{ receptor.zona }}</option>
-            </select>            
+            </select>
           </div>
-          
-       
-          
           <div class="text-center">
-          <button class="btn btn-success" id="botonGuardar" @click="guardarIncidencia(incidencia)" type="submit"
-            value="Enviar">
-            Enviar correo y GUARDAR
-          </button>
-          <input type="button" @click="limpiarIncidencia()" value="Limpiar formulario"
-            style="background-color: rgb(0, 153, 255);">
+            <button class="btn btn-success" id="botonGuardar" @click="guardarIncidencia(incidencia)" type="submit"
+              value="Enviar">
+              Enviar correo y GUARDAR
+            </button>
+            <input type="button" @click="limpiarIncidencia()" value="Limpiar formulario"
+              style="background-color: rgb(0, 153, 255);">
           </div>
           <!-- Mensaje de error campos validación formulario -->
           <div class="mensajeError">
@@ -692,9 +690,9 @@ export default {
               formulario:</p>
             <p class="error" v-for="error in mensajeError">{{ error }}</p>
           </div>
-        <!--ventana flotante de confirmación de envío del formulario-->
-        </div>        
-          <div id="ventanaMensaje">
+          <!--ventana flotante de confirmación de envío del formulario-->
+        </div>
+        <div id="ventanaMensaje">
         </div>
       </div>
     </div>
@@ -775,5 +773,4 @@ export default {
   left: 35%;
   top: 25%;
   display: none;
-}
-</style>
+}</style>

@@ -6,11 +6,13 @@ import { ref } from 'vue';
 import 'primevue/resources/primevue.min.css'; // Estilo de PrimeVue
 import 'primeicons/primeicons.css'; // Iconos de PrimeIcons
 import Paginator from 'primevue/paginator';
+import jsPDF from 'jspdf'
 
 export default {
+  name: 'pdf',
   props: ['incidencia'],
   components: {
-    Paginator,
+    Paginator, jsPDF,
   },
   emits: ["editarIncidencia"],
 
@@ -29,6 +31,7 @@ export default {
       //Para la paginación       
       first: 0, // Primera página
       rows: 10, // Elementos por página
+      activeRowId: null,
     };
   },
   computed: {
@@ -41,7 +44,6 @@ export default {
       const filtroDeIncidencias = this.incidencias.filter((incidencia) =>
         incidencia.estado.toLowerCase().includes(this.busquedaEstado.toLowerCase())
       );
-      // return filtroDeIncidencias.slice(0, 4);
       return filtroDeIncidencias;
     },
   },
@@ -62,8 +64,11 @@ export default {
       if (date) {
         return moment(date).format("YYYY-MM-DD"); // Formatea la fecha si no es null
       } else {
-        return "No finalizada"; // Muestra "No finalizada" si la fecha es null
+        return "No finalizada";
       }
+    },
+    isRowActive(incidenciaId) {
+      return this.activeRowId === incidenciaId;
     },
     editarIncidencia(incidencia) {
       // Emite el evento 'editarIncidencia' con la incidencia y su id
@@ -71,8 +76,65 @@ export default {
         id: incidencia.id,
         data: incidencia
       });
+      // Cambia el estado de isRowActive al hacer clic en el botón
+      this.activeRowId = incidencia.id;
+      // Establece un temporizador para restablecer el estado después de x segundos
+      setTimeout(() => {
+        this.activeRowId = null;
+      }, 9000);
     },
-
+    downloadPDF(incidencia) {
+      var pdf = new jsPDF();
+      pdf.setFontSize(16);
+      pdf.setTextColor(0, 0, 255);
+      pdf.text('-------------------------------------', 20, 12);
+      pdf.text('Información de la incidencia', 20, 17);
+      pdf.text('-------------------------------------', 20, 22);
+      pdf.setTextColor(0);
+      pdf.setFontSize(14);
+      pdf.setTextColor(255, 0, 0);
+      pdf.text(`Incidencia ${JSON.stringify(incidencia.id)} (${JSON.stringify(incidencia.unidad)})`, 15, 30);
+      pdf.setTextColor(0);
+      pdf.text(`Fecha de inicio:  ${this.formatDate(incidencia.fechaInicio)}`, 15, 40);
+      pdf.text(`Fecha de comunicación a empresa  responsable:  ${this.formatDate(incidencia.fechaInicio)}`, 15, 50);
+      pdf.text(`Fecha fin:  ${this.formatDate(incidencia.fechaFin)}`, 15, 60);
+      pdf.text(`Duración en días: ${incidencia.numDias}`, 15, 70);
+      pdf.text(`Estado: ${incidencia.estado}`, 15, 80);
+      pdf.setTextColor(0, 0, 255);
+      pdf.text('Categoría:', 15, 90);
+      pdf.setTextColor(0);
+      pdf.setTextColor(0, 0, 255);
+      pdf.text(`${incidencia.categoria}`, 15, 100);
+      pdf.setTextColor(0);
+      if (incidencia.categoria === 'DeficienciaServicio') {
+        pdf.text('Incumplimientos:', 15, 110);
+        pdf.setFontSize(10);
+        incidencia.incumplimiento.forEach((item, index) => {
+          const maxLineWidth = pdf.internal.pageSize.width - 20; // Tamaño máximo de la línea
+          const textLines = pdf.splitTextToSize(`${index + 1}. ${item}`, maxLineWidth);
+          textLines.forEach((line, lineIndex) => {
+            pdf.text(line, 15, 120 + index * 15 + lineIndex * 5);
+          });
+        });
+      } else if (incidencia.categoria === 'LimpiezaChoque') {
+        pdf.text(`Tipo de choque: ${incidencia.tipoChoque}`, 15, 130);
+        pdf.text(`Gravedad: ${incidencia.gravedad}`, 15, 140);
+      } else if (incidencia.categoria === 'CambiosDependencia') {
+        pdf.text(`Tipo de cambio: ${incidencia.tipoCambio}`, 15, 110);
+        pdf.setFontSize(11);
+        pdf.text(`Dependencias afectadas: ${incidencia.tipoDependencia}`, 10, 120);
+        pdf.setFontSize(14);
+        pdf.text(`Superficie afectada en metros: ${incidencia.metrosCuadrados}`, 15, 130);
+      }
+      pdf.setFontSize(14);
+      pdf.text(`Descripción: ${incidencia.descripcion}`, 15, 180);
+      const maxLineWidth = pdf.internal.pageSize.width - 30;
+      const textLines = pdf.splitTextToSize(`Información adicional: ${incidencia.infoAdicio_grabador}`, maxLineWidth);
+      textLines.forEach((line, index) => {
+        pdf.text(line, 15, 190 + index * 10);
+      });
+      pdf.save('incidencia.pdf');
+    },
   }
 }
 </script>
@@ -92,123 +154,131 @@ export default {
         </select>
         <!-- Define la tabla y su cabecera dentro del mismo contenedor -->
         <div class="table-container">
+          <table class="table table-sm table-hover" id="table">
+            <thead class="table-light">
+              <tr>
+                <th scope="col">Número</th>
+                <th scope="col">Inicio</th>
+                <th scope="col">Comunica</th>
+                <th scope="col">Estado</th>
+                <th scope="col">Tipo de incidencia</th>
+                <th scope="col">Descripción:</th>
+                <th scope="col">Info. adicional</th>
+                <th scope="col">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- v-for solo para las filas de la tabla -->
+              <tr v-for="(incidencia, index) in visibleIncidencias" :key="incidencia.id"
+                :class="{ 'table-active': isRowActive(incidencia.id) }">
+                <th>{{ incidencia.id }}</th>
+                <td class="ancho-columna">{{ formatDate(incidencia.fechaInicio) }}</td>
+                <td class="ancho-columna">{{ formatDate(incidencia.comunicaEmpresa) }}</td>
+                <td>{{ incidencia.estado }}</td>
+                <td>{{ incidencia.categoria }}</td>
+                <td>{{ incidencia.descripcion }}</td>
+                <td>{{ incidencia.infoAdicio_grabador }}</td>
+                <td>
+                  <button type="button" class="btn btn-info" @click="togglePopUp(incidencia)">Consultar</button>
+                </td>
+                <td>
+                  <button type="button" class="btn btn-warning btn-sm" @click="editarIncidencia(incidencia)">Enviar a
+                    SABAS/Editar</button>
+                </td>
+                <!--/////////////////////////// Contenido de la ventana emergente ///////////////////////////-->
+                <transition name="fade">
+                  <div v-if="incidencia.showPopup" class="pop-up">
 
-            <table class="table table-sm" id="table">
-          <thead class="table-light">
-            <tr>
-              <th scope="col">Número</th>
-              <th scope="col">Inicio</th>
-              <th scope="col">Comunica</th>
-              <th scope="col">Estado</th>
-              <th scope="col">Tipo de incidencia</th>
-              <th scope="col">Descripción:</th>
-              <th scope="col">Info. adicional</th>
-              <th scope="col">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Utilizo v-for solo para las filas de la tabla -->
-            <tr v-for="(incidencia, index) in visibleIncidencias" :key="incidencia.id">
-              <th>{{ incidencia.id }}</th>
-              <td class="ancho-columna">{{ formatDate(incidencia.fechaInicio) }}</td>
-              <td class="ancho-columna">{{ formatDate(incidencia.comunicaEmpresa) }}</td>
-              <td>{{ incidencia.estado }}</td>
-              <td>{{ incidencia.categoria }}</td>
-              <td>{{ incidencia.descripcion }}</td>
-              <td>{{ incidencia.infoAdicio_grabador }}</td>
-              <td>
-                <button type="button" class="btn btn-info" @click="togglePopUp(incidencia)">Consultar</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-warning btn-sm" @click="editarIncidencia(incidencia)">Enviar a
-                  SABAS/Editar</button>
-              </td>
-              <!--/////////////////////////// Contenido de la ventana emergente ///////////////////////////-->
-              <transition name="fade">
-                <div v-if="incidencia.showPopup" class="pop-up">
-                  <button type="button" class="btn btn-secondary" @click="closePopUp(incidencia)">Cerrar</button>
-                  <div class="pop-up-inner">
-                    <p class="mb-0"><strong>Zona: </strong>{{ incidencia.zona }}</p>
-                    <p class="mb-0"><strong>Unidad: </strong>{{ incidencia.unidad }}</p>
-                    <p class="mb-0"><strong>Fecha inicio incidencia: </strong>{{ formatDate(incidencia.fechaInicio) }}</p>
-                    <p class="mb-0"><strong>Fecha de comunicación a la empresa responsable: </strong>{{
-                      formatDate(incidencia.comunicaEmpresa) }}</p>
-                    <p class="mb-0"><strong>Fecha fin: </strong>{{ formatDate(incidencia.fechaFin) }}</p>
-                    <p class="mb-0"><strong>Duración en días: </strong>{{ incidencia.numDias }}</p>
-                    <p class="mb-0"><strong>Estado: </strong>{{ incidencia.estado }}</p>
-                    <p class="mb-0"><strong>Categoria: </strong>{{ incidencia.categoria }}</p>
-                    <div v-if="incidencia.categoria === 'DeficienciaServicio'">
-                      <div class="container-fluid incumplimiento">
-                        <h5>Incumplimientos:</h5>
-                        <ul>
-                          <li v-for="(item, index) in incidencia.incumplimiento" :key="index">{{ item }}</li>
-                        </ul>
-                      </div>
+                    <!-- botones descargar en pdf y cerrar -->
+                    <div class="pdf">
+                      <button type="button" class="btn btn-success mr-2" @click="downloadPDF(incidencia)">Descargar en
+                        PDF</button><br><br>
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <button type="button" class="btn btn-secondary" @click="closePopUp(incidencia)">Cerrar</button>
                     </div>
-                    <div v-if="incidencia.categoria === 'LimpiezaChoque'">
-                      <div class="container-fluid LimpiezaChoque">
-                        Tipo de choque: {{ incidencia.tipoChoque }}<br>
-                        Gravedad: {{ incidencia.gravedad }}
+
+                    <div class="pop-up-inner">
+                      <p class="mb-0"><strong>Zona: </strong>{{ incidencia.zona }}</p>
+                      <p class="mb-0"><strong>Unidad: </strong>{{ incidencia.unidad }}</p>
+                      <p class="mb-0"><strong>Fecha inicio incidencia: </strong>{{ formatDate(incidencia.fechaInicio) }}
+                      </p>
+                      <p class="mb-0"><strong>Fecha de comunicación a la empresa responsable: </strong>{{
+                        formatDate(incidencia.comunicaEmpresa) }}</p>
+                      <p class="mb-0"><strong>Fecha fin: </strong>{{ formatDate(incidencia.fechaFin) }}</p>
+                      <p class="mb-0"><strong>Duración en días: </strong>{{ incidencia.numDias }}</p>
+                      <p class="mb-0"><strong>Estado: </strong>{{ incidencia.estado }}</p>
+                      <p class="mb-0"><strong>Categoria: </strong>{{ incidencia.categoria }}</p>
+                      <div v-if="incidencia.categoria === 'DeficienciaServicio'">
+                        <div class="container-fluid incumplimiento">
+                          <h5>Incumplimientos:</h5>
+                          <ul>
+                            <li v-for="(item, index) in incidencia.incumplimiento" :key="index">{{ item }}</li>
+                          </ul>
+                        </div>
                       </div>
-                    </div>
-                    <div v-if="incidencia.categoria === 'CambiosDependencia'">
-                      <div class="container-fluid LimpiezaChoque">
-                        <h5>Cambios en las dependencias oficiales:</h5>
-                        Tipo de cambio: {{ incidencia.tipoCambio }}<br>
-                        Dependencias afectadas: {{ incidencia.tipoDependencia }}<br>
-                        Superficie afectada en metros: {{ incidencia.metrosCuadrados }}
+                      <div v-if="incidencia.categoria === 'LimpiezaChoque'">
+                        <div class="container-fluid LimpiezaChoque">
+                          Tipo de choque: {{ incidencia.tipoChoque }}<br>
+                          Gravedad: {{ incidencia.gravedad }}
+                        </div>
                       </div>
+                      <div v-if="incidencia.categoria === 'CambiosDependencia'">
+                        <div class="container-fluid LimpiezaChoque">
+                          <h5>Cambios en las dependencias oficiales:</h5>
+                          Tipo de cambio: {{ incidencia.tipoCambio }}<br>
+                          Dependencias afectadas: {{ incidencia.tipoDependencia }}<br>
+                          Superficie afectada en metros: {{ incidencia.metrosCuadrados }}
+                        </div>
+                      </div>
+                      <p class="mb-0"><strong>Descripción: </strong>{{ incidencia.descripcion }}</p>
+                      <p class="mb-0"><strong>Información adicional añadida por el grabador: </strong>{{
+                        incidencia.infoAdicio_grabador }}</p>
                     </div>
-                    <p class="mb-0"><strong>Descripción: </strong>{{ incidencia.descripcion }}</p>
-                    <p class="mb-0"><strong>Información adicional añadida por el grabador: </strong>{{
-                      incidencia.infoAdicio_grabador }}</p>
                   </div>
-                </div>
-              </transition>
-            </tr>
-          </tbody>
-            </table>
+                </transition>
+              </tr>
+            </tbody>
+          </table>
 
-            <!-- La lista que se mostrará en pantallas pequeñas -->
-            <ul id="list">
-             <li v-for="(incidencia, index) in visibleIncidencias" :key="incidencia.id">
-              <p class="mb-0"><strong>Número: </strong>{{ incidencia.id }}</p>
+          <!-- La lista que se mostrará en pantallas pequeñas -->
+          <ul id="list">
+            <li v-for="(incidencia, index) in visibleIncidencias" :key="incidencia.id">
+              <p class="mb-0"><strong>Núm: </strong>{{ incidencia.id }}</p>
               <p class="mb-0"><strong>Zona: </strong>{{ incidencia.zona }}</p>
               <p class="mb-0"><strong>Unidad: </strong>{{ incidencia.unidad }}</p>
-              <p class="mb-0"><strong>Fecha inicio: </strong>{{ formatDate(incidencia.fechaInicio) }}</p>
+              <p class="mb-0"><strong>Fecha inicio incidencia: </strong>{{ formatDate(incidencia.fechaInicio) }}
+              </p>
+              <p class="mb-0"><strong>Fecha de comunicación a la empresa responsable: </strong>{{
+                formatDate(incidencia.comunicaEmpresa) }}</p>
               <p class="mb-0"><strong>Fecha fin: </strong>{{ formatDate(incidencia.fechaFin) }}</p>
               <p class="mb-0"><strong>Duración en días: </strong>{{ incidencia.numDias }}</p>
               <p class="mb-0"><strong>Estado: </strong>{{ incidencia.estado }}</p>
-              <p class="mb-0"><strong>Fecha comunica empresa responsable: </strong>{{
-                formatDate(incidencia.comunicaEmpresa) }}</p>
-              <p class="mb-0"><strong>Información adicional añadida por el grabador: </strong>{{
-                incidencia.infoAdicio_grabador }}</p>
-              <p class="mb-0"><strong>Descripción: </strong>{{ incidencia.descripcion }}</p>
               <p class="mb-0"><strong>Categoria: </strong>{{ incidencia.categoria }}</p>
-
               <div v-if="incidencia.categoria === 'DeficienciaServicio'">
                 <div class="container-fluid incumplimiento">
                   <h5>Incumplimientos:</h5>
-                  {{ incidencia.incumplimiento }}
+                  <ul>
+                    <li v-for="(item, index) in incidencia.incumplimiento" :key="index">{{ item }}</li>
+                  </ul>
                 </div>
               </div>
-
               <div v-if="incidencia.categoria === 'LimpiezaChoque'">
                 <div class="container-fluid LimpiezaChoque">
-                  <h5>Limpieza de choque:</h5>
-                  Tipo de choque: {{ incidencia.tipoChoque }}
+                  Tipo de choque: {{ incidencia.tipoChoque }}<br>
                   Gravedad: {{ incidencia.gravedad }}
                 </div>
               </div>
-
               <div v-if="incidencia.categoria === 'CambiosDependencia'">
                 <div class="container-fluid LimpiezaChoque">
                   <h5>Cambios en las dependencias oficiales:</h5>
-                  Tipo de cambio: {{ incidencia.tipoCambio }}
-                  Dependencias afectadas: {{ incidencia.tipoDependencia }}
+                  Tipo de cambio: {{ incidencia.tipoCambio }}<br>
+                  Dependencias afectadas: {{ incidencia.tipoDependencia }}<br>
                   Superficie afectada en metros: {{ incidencia.metrosCuadrados }}
                 </div>
               </div>
+              <p class="mb-0"><strong>Descripción: </strong>{{ incidencia.descripcion }}</p>
+              <p class="mb-0"><strong>Información adicional añadida por el grabador: </strong>{{
+                incidencia.infoAdicio_grabador }}</p>
               <td>
                 <button type="button" class="btn btn-info" @click="togglePopUp(incidencia)">Consultar</button>
               </td>
@@ -219,7 +289,15 @@ export default {
               <!--/////////////////////////// Contenido de la ventana emergente ///////////////////////////-->
               <transition name="fade">
                 <div v-if="incidencia.showPopup" class="pop-up">
-                  <button type="button" class="btn btn-secondary" @click="closePopUp(incidencia)">Cerrar</button>
+                  <!-- <button type="button" class="btn btn-secondary" @click="closePopUp(incidencia)">Cerrar</button> -->
+
+                  <div class="pdf">
+                    <button type="button" class="btn btn-success mr-2" @click="downloadPDF(incidencia)">Descargar en
+                      PDF</button><br><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button type="button" class="btn btn-secondary" @click="closePopUp(incidencia)">Cerrar</button>
+                  </div>
+
                   <div class="pop-up-inner">
                     <p class="mb-0"><strong>Zona: </strong>{{ incidencia.zona }}</p>
                     <p class="mb-0"><strong>Unidad: </strong>{{ incidencia.unidad }}</p>
@@ -258,9 +336,8 @@ export default {
                   </div>
                 </div>
               </transition>
-             </li> 
-            </ul>
-
+            </li>
+          </ul>
 
         </div>
         <div>
@@ -268,8 +345,6 @@ export default {
           <Paginator :rows="rows" v-model:first="first" :totalRecords="filtroDeBusqueda.length"
             @onPageChange="onPageChange"></Paginator>
         </div>
-
-
       </div>
     </div>
   </div>
@@ -307,29 +382,28 @@ export default {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
-/* Estilos de la tabla en pantallas grandes */
+/* Estilos de la tabla en pantallas grandes / reducidas */
 #table {
-  display: table; /* Muestra la tabla en pantallas grandes */
+  display: table;
 }
 
-/* Estilos de la lista en pantallas pequeñas */
 #list {
-  display: none; /* Oculta la lista por defecto */
+  display: none;
 }
 
-/* Regla @media para pantallas pequeñas (ancho menor de 1400px) */
 @media screen and (max-width: 1350px) {
   #table {
-    display: none; /* Oculta la tabla en pantallas pequeñas */
+    display: none;
   }
 
   #list {
-    display: block; /* Muestra la lista en pantallas pequeñas */
+    display: block;
   }
 }
 
 .ancho-columna {
-  width: 95px; /* Ajusta el ancho según tu preferencia */
+  width: 95px;
+
 }
 </style>
 

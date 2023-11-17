@@ -10,6 +10,9 @@ import "primevue/resources/themes/saga-blue/theme.css";
 import "primevue/resources/primevue.min.css";
 import "primeicons/primeicons.css";
 import PrimeVue from "primevue/config";
+//mensaje confirmacion
+
+import ConfirmationService from 'primevue/confirmationservice';
 
 // vistas
 import Home from "@/components/Home.vue";
@@ -55,8 +58,7 @@ const routes = [
     name: "GestionarInciSabas",
     component: GestionarInciSabas,
   },
-  {
-   // path: "/EditaincidenSabas/:id/:zona/:unidad/:fechaInicio/:fechaFin/:numDias/:estado/:comunicaEmpresa/:categoria",
+  { 
     path: "/EditaincidenSabas/:incidencia",
     name: "EditaincidenSabas",
     component: EditaincidenSabas,
@@ -66,7 +68,6 @@ const routes = [
   { path: "/:pathMatch(.*)*", name: "NotFound", component: NotFound },
 ];
 
-// Crear el enrutador
 const router = createRouter({
   history: createWebHashHistory(),
   routes,
@@ -90,9 +91,9 @@ router.beforeEach((to, from, next) => {
   }
 });
 
-// Monta la aplicación
 const app = createApp(App);
 app.use(router);
 app.use(pinia);
 app.use(PrimeVue);
+app.use(ConfirmationService);
 app.mount("#app");

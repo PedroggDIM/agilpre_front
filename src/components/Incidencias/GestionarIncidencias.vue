@@ -96,12 +96,19 @@ export default {
       debugger;
       console.log(JSON.stringify(incidencia))
       console.log(incidencia);
-      if (this.validarFormulario()) {   //       
-        this.guardarIncidenciaStore(incidencia)
-        //Mensaje de confirmación del envío de la incidencia
-        this.mensajeConfirmaGuardado()
-        //Limpieza de los campos tras el envío de la incidencia       
-        this.limpiarIncidencia();
+      if (this.validarFormulario()) {
+        // Cuadro de confirmación
+        const confirmacion = confirm('¿Está seguro de que desea editar la incidencia?');
+        // Si el usuario confirma, realiza la acción de guardar
+        if (confirmacion) {
+          this.guardarIncidenciaStore(incidencia);
+          // Mensaje de confirmación del envío de la incidencia
+          this.mensajeConfirmaGuardado();
+          // Limpieza de los campos tras el envío de la incidencia
+          this.limpiarIncidencia();
+        } else {
+          // Acción adicional por si el usuario cancela
+        }
       }
     },
     mensajeConfirmaGuardado() {
@@ -154,7 +161,6 @@ export default {
       } else if (this.incidencia.fechaFin != null && this.incidencia.fechaFin.trim() !== '') {
         const fechaInicio = new Date(this.incidencia.fechaInicio);
         const fechaFin = new Date(this.incidencia.fechaFin);
-
         if (fechaFin < fechaInicio) {
           valid = false;
           this.mensajeError.push('La fecha de finalización no puede ser anterior a la fecha de inicio.');
@@ -217,13 +223,9 @@ export default {
   <div>
     <Navbar />
   </div>
-  <!-- <p>Incidencia enviará: {{ incidencia }}</p> -->
-  <!-- Para el envio del @ uso de api formsubmit -->
-  <!-- <form action="https://formsubmit.co/pedrogilgil447@gmail.com" method="POST" target="_blank" id="form"> -->
-  <!-- Para el envío del @ uso la api Formspree -->
-  <!-- <form id="form" class="form" action="https://formspree.io/f/meqbvewr" method="POST" target="_blank" id="form"> -->
   <div class="container-fluid ancho">
-    <h3 class="titulo">Formulario de edición de incidencias: del {{ incidencia.unidad }}</h3>
+    <h3 class="titulo">Formulario de edición de incidencias<p class="unidad"> {{ incidencia.unidad }}</p>
+    </h3>
     <div class="row mt-3">
       <div class="col">
 
@@ -238,10 +240,7 @@ export default {
                 formulario:</p>
               <p class="error" v-for="error in mensajeError">{{ error }}</p>
             </div>
-
-
           </div>
-
           <div class="col-12 col-md-3 mb-3" id="edi">
             <p class="margeninput">Estado</p>
             <select name="estado" class="form-select" v-model="incidencia.estado">
@@ -249,7 +248,6 @@ export default {
               <option value="Comunicada a la empresa y resuelta">Comunicada a la empresa y resuelta</option>
               <option value="Enviada al SABAS">Enviada al SABAS</option>
             </select>
-
             <p class="margeninput" v-if="incidencia.estado === 'Comunicada a la empresa y resuelta'">Fecha fin de la
               incidencia</p>
             <input type="date" name="fechaFin" v-model="incidencia.fechaFin" @change="calcularDiferenciaDias"
@@ -257,12 +255,10 @@ export default {
             <p class="margeninput">Información adicional por parte del grabador</p>
             <textarea placeholder="Información adicional de la incidencia" class="form-control" cols="30" rows="5"
               v-model.trim="incidencia.infoAdicio_grabador" />
-
             <button class="btn btn-success" id="botonGuardar" @click="guardarIncidencia(incidencia)" type="submit"
               value="Enviar">
               Guardar
             </button>
-
             <input type="button" @click="limpiarIncidencia()" value="Limpiar" style="background-color: rgb(0, 153, 255);">
           </div>
         </div>
@@ -308,6 +304,12 @@ export default {
 
 #edi {
   margin-top: 60px;
+}
+
+.unidad {
+  color: blue;
+  font-family: 'Times New Roman', Times, serif;
+
 }
 </style>
 

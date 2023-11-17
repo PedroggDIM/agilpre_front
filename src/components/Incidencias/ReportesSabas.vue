@@ -15,7 +15,7 @@ import pdfFonts from 'pdfmake/build/vfs_fonts';
 import 'datatables.net-responsive-bs5';
 import JsZip from 'jszip';
 import Navbar from "@/components/Navbar.vue";
-import moment from 'moment'; 
+import moment from 'moment';
 
 window.JsZip = JsZip;
 DataTable.use(DataTableLib);
@@ -41,7 +41,7 @@ export default {
         { data: 'fechaInicio', render: this.formatDate },
         { data: 'fechaFin', render: this.formatDate },
         { data: 'numDias' },
-        { data: 'estado' },        
+        { data: 'estado' },
         { data: 'categoria' },
         { data: 'descripcion' },
         { data: 'infoAdicio_grabador' },
@@ -64,10 +64,10 @@ export default {
     },
     formatDate(date) {
       if (date) {
-      return moment(date).format("YYYY-MM-DD"); // Formatea la fecha si no es null
-    } else {
-      return "No finalizada"; // Muestra "No finalizada" si la fecha es null
-    }
+        return moment(date).format("YYYY-MM-DD"); // Formatea la fecha si no es null
+      } else {
+        return "No finalizada"; // Muestra "No finalizada" si la fecha es null
+      }
     },
   },
 }
@@ -100,7 +100,7 @@ export default {
               <th>Fecha de fin</th>
               <th>Días</th>
               <th>Estado</th>
-              
+
               <th>Categoria</th>
               <th>Descripción</th>
               <th>Actualizaciones</th>
@@ -112,18 +112,25 @@ export default {
       </div>
     </div>
   </div>
-
 </template>
 <style>
 .ancho {
   width: 95%;
-  margin: 0 auto;  
-  background-color: #E6E6E6;  
-  padding: 20px;  
+  margin: 0 auto;
+  background-color: #E6E6E6;
+  padding: 20px;
   border: 4px;
   border-radius: 10px;
 }
+
 .mb-0 {
   margin: 5px;
+}
+
+.titulo {
+  font-family: 'Times New Roman';
+  margin-left: 20px;
+  margin-top: 20px;
+
 }
 </style>
